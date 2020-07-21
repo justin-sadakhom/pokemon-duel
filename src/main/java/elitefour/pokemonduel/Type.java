@@ -1,6 +1,6 @@
 package elitefour.pokemonduel;
 
-enum Type {
+public enum Type {
     NONE,
     NORMAL,
     FIGHTING,

@@ -2,7 +2,7 @@ package elitefour.pokemonduel;
 
 import java.util.ArrayList;
 
-class Status {
+public class Status {
     
     public enum LoneStatus {
         NONE,
