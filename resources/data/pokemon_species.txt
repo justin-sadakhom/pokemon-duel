@@ -1,0 +1,9 @@
+Bulbasaur
+Grass/Poison
+45/49/65/65/45
+Ivysaur
+Grass/Poison
+60/62/63/80/80/60
+Venusaur
+Grass/Poison
+80/82/83/100/100/80
