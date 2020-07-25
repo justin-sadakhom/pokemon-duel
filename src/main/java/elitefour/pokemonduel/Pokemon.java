@@ -37,6 +37,7 @@ public class Pokemon {
     
     private final Map<Stat, Integer> baseStats, evs, ivs;
     private Map<Stat, Integer> stats, statStages;
+    private int currentHealth;
     
     /* Constructor with default values for fields. */
     
@@ -78,6 +79,7 @@ public class Pokemon {
             Stat.SPEED, 0, Stat.ACCURACY, 0, Stat.EVASION, 0);
         
         calcStats();
+        currentHealth = stats.get(Stat.HEALTH);
     }
     
     /* Constructor that requires specific parameters. */
@@ -121,6 +123,7 @@ public class Pokemon {
             Stat.ACCURACY, 0, Stat.EVASION, 0);
         
         calcStats();
+        currentHealth = stats.get(Stat.HEALTH);
     }
     
     private Type[] initType() throws Exception {
@@ -216,9 +219,23 @@ public class Pokemon {
         status = newStatus;
     }
     
+    public void clearStatus() {
+        status.clearLoneStatus();
+        status.clearMixStatus();
+    }
+    
+    public int getLevel() {
+        return level;
+    }
+    
+    public void raiseLevel() {
+        level += 1;
+        calcStats(); // Level change also changes stats.
+    }
+    
     private void calcStats() {
         
-        // Still need HP calculation.
+        stats.put(Stat.HEALTH, calcHealth());
         stats.put(Stat.ATTACK, calcAttack());
         stats.put(Stat.DEFENSE, calcDefense());
         stats.put(Stat.SPECIAL_ATTACK, calcSpecialAttack());
@@ -226,6 +243,12 @@ public class Pokemon {
         stats.put(Stat.SPEED, calcSpeed());
         stats.put(Stat.ACCURACY, 1);
         stats.put(Stat.EVASION, 1);
+    }
+    
+    private int calcHealth() {
+        
+        return (int)((((2 * baseStats.get(Stat.HEALTH) + ivs.get(Stat.HEALTH) + 
+                (evs.get(Stat.HEALTH) / 4)) * level) / 100) + level + 10);
     }
     
     public int calcAttack() {
@@ -346,6 +369,30 @@ public class Pokemon {
                         ivs.get(Stat.SPEED), evs.get(Stat.SPEED),
                         Modifier.NEUTRAL);
         }
+    }
+    
+    public int maxHealth() {
+        return stats.get(Stat.HEALTH);
+    }
+    
+    public int currentHealth() {
+        return currentHealth;
+    }
+    
+    public void deductHealth(int damage) {
+        
+        if (currentHealth - damage < 0)
+            currentHealth = 0;
+        else
+            currentHealth -= damage;
+    }
+    
+    public void restoreHealth(int healing) {
+        
+        if (currentHealth + healing > maxHealth())
+            currentHealth = maxHealth();
+        else
+            currentHealth += healing;
     }
     
     private int statFormula(int baseStat, int IV, int EV, Modifier mod) {
