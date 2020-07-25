@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
+import static java.util.Map.entry;
 
 enum Modifier {
     POSITIVE,
@@ -26,6 +27,42 @@ public class Pokemon {
         EVASION
     }
     
+    /* Constants */
+    
+    private final Map<Integer, Double> REGULAR_STAT_STAGES = Map.ofEntries(
+        entry(-6, 2.0/8.0),
+        entry(-5, 2.0/7.0),
+        entry(-4, 2.0/6.0),
+        entry(-3, 2.0/5.0),
+        entry(-2, 2.0/4.0),
+        entry(-1, 2.0/3.0),
+        entry(0, 2.0/2.0),
+        entry(1, 3.0/2.0),
+        entry(2, 4.0/2.0),
+        entry(3, 5.0/2.0),
+        entry(4, 6.0/2.0),
+        entry(5, 7.0/2.0),
+        entry(6, 8.0/2.0)
+    );
+    
+    private final Map<Integer, Double> PRECISION_STAT_STAGES = Map.ofEntries(
+        entry(-6, 3.0/9.0),
+        entry(-5, 3.0/8.0),
+        entry(-4, 3.0/7.0),
+        entry(-3, 3.0/6.0),
+        entry(-2, 3.0/5.0),
+        entry(-1, 3.0/4.0),
+        entry(0, 3.0/3.0),
+        entry(1, 4.0/3.0),
+        entry(2, 5.0/3.0),
+        entry(3, 6.0/3.0),
+        entry(4, 7.0/3.0),
+        entry(5, 8.0/3.0),
+        entry(6, 9.0/3.0)
+    );
+            
+    /* Regular fields */
+    
     private final String name;
     private final Type[] type;
     private final Move[] moves;
@@ -36,7 +73,7 @@ public class Pokemon {
     /* Statistics fields */
     
     private final Map<Stat, Integer> baseStats, evs, ivs;
-    private Map<Stat, Integer> stats, statStages;
+    private Map<Stat, Integer> stats, statStages, effectiveStats;
     private int currentHealth;
     
     /* Constructor with default values for fields. */
@@ -371,10 +408,6 @@ public class Pokemon {
         }
     }
     
-    public int maxHealth() {
-        return stats.get(Stat.HEALTH);
-    }
-    
     public int currentHealth() {
         return currentHealth;
     }
@@ -389,11 +422,17 @@ public class Pokemon {
     
     public void restoreHealth(int healing) {
         
-        if (currentHealth + healing > maxHealth())
-            currentHealth = maxHealth();
+        if (currentHealth + healing > getStat(Stat.HEALTH))
+            currentHealth = getStat(Stat.HEALTH);
         else
             currentHealth += healing;
     }
+    
+    public int getStat(Stat stat) {
+        return stats.get(stat);
+    }
+    
+    
     
     private int statFormula(int baseStat, int IV, int EV, Modifier mod) {
         
