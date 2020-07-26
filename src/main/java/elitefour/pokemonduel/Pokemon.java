@@ -72,8 +72,8 @@ public class Pokemon {
     
     /* Statistics fields */
     
-    private final Map<Stat, Integer> baseStats, evs, ivs;
-    private Map<Stat, Integer> stats, statStages, effectiveStats;
+    private final Map<Stat, Integer> baseStats, evs, ivs, statStages;
+    private Map<Stat, Integer> stats;
     private int currentHealth;
     
     /* Constructor with default values for fields. */
@@ -428,11 +428,50 @@ public class Pokemon {
             currentHealth += healing;
     }
     
+    public int getStatStage(Stat stat) {
+        return statStages.get(stat);
+    }
+    
+    public void raiseStatStage(Stat stat, int amount) {
+        
+        int currentStage = getStatStage(stat);
+        
+        if (currentStage + amount <= 6)
+            statStages.put(stat, currentStage + amount);
+        else
+            statStages.put(stat, 6);
+    }
+    
+    public void lowerStatStage(Stat stat, int amount) {
+        
+        int currentStage = getStatStage(stat);
+        
+        if (currentStage + amount >= -6)
+            statStages.put(stat, currentStage - amount);
+        else
+            statStages.put(stat, -6);
+    }
+    
     public int getStat(Stat stat) {
         return stats.get(stat);
     }
     
-    
+    public int getEffectiveStat(Stat stat) {
+        
+        switch(stat) {
+            case ATTACK:
+            case DEFENSE:
+            case SPECIAL_ATTACK:
+            case SPECIAL_DEFENSE:
+            case SPEED:
+                return (int)(getStat(stat) * 
+                        REGULAR_STAT_STAGES.get(getStatStage(stat)));
+                
+            default: // case ACCURACY or case PRECISION.
+                return (int)(getStat(stat) * 
+                        PRECISION_STAT_STAGES.get(getStatStage(stat)));
+        }
+    }
     
     private int statFormula(int baseStat, int IV, int EV, Modifier mod) {
         
