@@ -11,14 +11,14 @@ public abstract class Move {
     private final String name;
     private final Type type;
     private final Category category;
-    private final byte maxPP;
-    private final byte power;
-    private final byte accuracy;
+    private final int maxPP;
+    private final int power;
+    private final int accuracy;
     
-    private byte currentPP;
+    private int currentPP;
     
     public Move(String name, Type type, Category category,
-            byte pp, byte power, byte accuracy) {
+            int pp, int power, int accuracy) {
         
         this.name = name;
         this.type = type;
@@ -41,31 +41,37 @@ public abstract class Move {
         return category;
     }
     
-    public byte maxPP() {
+    public int maxPP() {
         return maxPP;
     }
     
-    public byte PP() {
+    public int PP() {
         return currentPP;
     }
     
-    public void addPP(byte addition) {
+    public void addPP(int addition) {
         
         if (currentPP + addition <= maxPP)
             currentPP += addition;
+        else
+            currentPP = maxPP;
     }
     
-    public void deductPP(byte deduction) {
+    public void deductPP(int deduction) {
         
         if (currentPP - deduction >= 0)
             currentPP -= deduction;
+        else
+            currentPP = 0;
     }
     
-    public byte power() {
+    public int power() {
         return power;
     }
     
-    public byte accuracy() {
+    public int accuracy() {
         return accuracy;
     }
+    
+    public abstract void use(Pokemon user, Pokemon target);
 }

@@ -24,7 +24,8 @@ public class Pokemon {
         SPECIAL_DEFENSE,
         SPEED,
         ACCURACY,
-        EVASION
+        EVASION,
+        CRITICAL
     }
     
     /* Constants */
@@ -45,7 +46,7 @@ public class Pokemon {
         entry(6, 8.0/2.0)
     );
     
-    private final Map<Integer, Double> PRECISION_STAT_STAGES = Map.ofEntries(
+    private final Map<Integer, Double> ACCURACY_STAT_STAGES = Map.ofEntries(
         entry(-6, 3.0/9.0),
         entry(-5, 3.0/8.0),
         entry(-4, 3.0/7.0),
@@ -59,6 +60,31 @@ public class Pokemon {
         entry(4, 7.0/3.0),
         entry(5, 8.0/3.0),
         entry(6, 9.0/3.0)
+    );
+    
+    private final Map<Integer, Double> EVASION_STAT_STAGES = Map.ofEntries(
+        entry(-6, 3.0/9.0),
+        entry(-5, 3.0/8.0),
+        entry(-4, 3.0/7.0),
+        entry(-3, 3.0/6.0),
+        entry(-2, 3.0/5.0),
+        entry(-1, 3.0/4.0),
+        entry(0, 3.0/3.0),
+        entry(1, 4.0/3.0),
+        entry(2, 5.0/3.0),
+        entry(3, 6.0/3.0),
+        entry(4, 7.0/3.0),
+        entry(5, 8.0/3.0),
+        entry(6, 9.0/3.0)
+    );
+    
+    private final Map<Integer, Double> CRIT_STAT_STAGES = Map.ofEntries(
+        entry(0, 1.0/24.0),
+        entry(1, 1.0/8.0),
+        entry(2, 1.0/2.0),
+        entry(3, 1.0),
+        entry(4, 1.0),
+        entry(5, 1.0)
     );
             
     /* Regular fields */
@@ -74,6 +100,7 @@ public class Pokemon {
     
     private final Map<Stat, Integer> baseStats, evs, ivs, statStages;
     private Map<Stat, Integer> stats;
+    private Map<Stat, Double> hiddenStats;
     private int currentHealth;
     
     /* Constructor with default values for fields. */
@@ -112,8 +139,8 @@ public class Pokemon {
             Stat.DEFENSE, 31, Stat.SPECIAL_ATTACK, 31,
             Stat.SPECIAL_DEFENSE, 31, Stat.SPEED, 31);
         this.statStages = Map.of(Stat.ATTACK, 0, Stat.DEFENSE, 0,
-            Stat.SPECIAL_ATTACK, 0, Stat.SPECIAL_DEFENSE, 0,
-            Stat.SPEED, 0, Stat.ACCURACY, 0, Stat.EVASION, 0);
+            Stat.SPECIAL_ATTACK, 0, Stat.SPECIAL_DEFENSE, 0, Stat.SPEED, 0,
+            Stat.ACCURACY, 0, Stat.EVASION, 0, Stat.CRITICAL, 0);
         
         calcStats();
         currentHealth = stats.get(Stat.HEALTH);
@@ -156,8 +183,8 @@ public class Pokemon {
             Stat.DEFENSE, ivs[2], Stat.SPECIAL_ATTACK, ivs[3],
             Stat.SPECIAL_DEFENSE, ivs[4], Stat.SPEED, ivs[5]);
         this.statStages = Map.of(Stat.ATTACK, 0, Stat.DEFENSE, 0,
-            Stat.SPECIAL_ATTACK, 0, Stat.SPECIAL_DEFENSE, 0,
-            Stat.ACCURACY, 0, Stat.EVASION, 0);
+            Stat.SPECIAL_ATTACK, 0, Stat.SPECIAL_DEFENSE, 0, Stat.SPEED, 0,
+            Stat.ACCURACY, 0, Stat.EVASION, 0, Stat.CRITICAL, 0);
         
         calcStats();
         currentHealth = stats.get(Stat.HEALTH);
@@ -229,6 +256,10 @@ public class Pokemon {
         moves[index] = move;
     }
     
+    public void useMove(int slot, Pokemon target) {
+        moves[slot - 1].use(this, target);
+    }
+    
     public Nature getNature() {
         return nature;
     }
@@ -278,8 +309,9 @@ public class Pokemon {
         stats.put(Stat.SPECIAL_ATTACK, calcSpecialAttack());
         stats.put(Stat.SPECIAL_DEFENSE, calcSpecialDefense());
         stats.put(Stat.SPEED, calcSpeed());
-        stats.put(Stat.ACCURACY, 1);
-        stats.put(Stat.EVASION, 1);
+        hiddenStats.put(Stat.ACCURACY, 1.0);
+        hiddenStats.put(Stat.EVASION, 1.0);
+        hiddenStats.put(Stat.CRITICAL, 1.0);
     }
     
     private int calcHealth() {
@@ -288,7 +320,7 @@ public class Pokemon {
                 (evs.get(Stat.HEALTH) / 4)) * level) / 100) + level + 10);
     }
     
-    public int calcAttack() {
+    private int calcAttack() {
         
         switch(nature) {
             case LONELY:
@@ -312,7 +344,7 @@ public class Pokemon {
         }
     }
     
-    public int calcDefense() {
+    private int calcDefense() {
         
         switch(nature) {
             case BOLD:
@@ -336,7 +368,7 @@ public class Pokemon {
         }
     }
     
-    public int calcSpecialAttack() {
+    private int calcSpecialAttack() {
         
         switch(nature) {
             case MODEST:
@@ -360,7 +392,7 @@ public class Pokemon {
         }
     }
     
-    public int calcSpecialDefense() {
+    private int calcSpecialDefense() {
         
         switch(nature) {
             case CALM:
@@ -384,7 +416,7 @@ public class Pokemon {
         }
     }
     
-    public int calcSpeed() {
+    private int calcSpeed() {
         
         switch(nature) {
             case NAIVE:
@@ -434,43 +466,61 @@ public class Pokemon {
     
     public void raiseStatStage(Stat stat, int amount) {
         
+        int maxStage;
+        
+        if (stat.equals(Stat.CRITICAL))
+            maxStage = 5;
+        else
+            maxStage = 6;
+            
         int currentStage = getStatStage(stat);
         
-        if (currentStage + amount <= 6)
+        if (currentStage + amount <= maxStage)
             statStages.put(stat, currentStage + amount);
         else
-            statStages.put(stat, 6);
+            statStages.put(stat, maxStage);
     }
     
     public void lowerStatStage(Stat stat, int amount) {
         
+        int minStage;
+        
+        if (stat.equals(Stat.CRITICAL))
+            minStage = 0;
+        else
+            minStage = -6;
+        
         int currentStage = getStatStage(stat);
         
-        if (currentStage + amount >= -6)
+        if (currentStage + amount >= minStage)
             statStages.put(stat, currentStage - amount);
         else
-            statStages.put(stat, -6);
+            statStages.put(stat, minStage);
     }
     
     public int getStat(Stat stat) {
         return stats.get(stat);
     }
     
-    public int getEffectiveStat(Stat stat) {
-        
+    public double getHiddenStat(Stat stat) {
         switch(stat) {
-            case ATTACK:
-            case DEFENSE:
-            case SPECIAL_ATTACK:
-            case SPECIAL_DEFENSE:
-            case SPEED:
-                return (int)(getStat(stat) * 
-                        REGULAR_STAT_STAGES.get(getStatStage(stat)));
+            case ACCURACY:
+                return hiddenStats.get(stat) * 
+                        ACCURACY_STAT_STAGES.get(getStatStage(stat));
                 
-            default: // case ACCURACY or case PRECISION.
-                return (int)(getStat(stat) * 
-                        PRECISION_STAT_STAGES.get(getStatStage(stat)));
+            case EVASION:
+                return hiddenStats.get(stat) * 
+                        EVASION_STAT_STAGES.get(getStatStage(stat));
+
+            default: // case CRITICAL
+                return hiddenStats.get(stat) * 
+                        CRIT_STAT_STAGES.get(getStatStage(stat));
         }
+    }
+    
+    public int getEffectiveStat(Stat stat) {
+        return (int)(getStat(stat) * 
+                REGULAR_STAT_STAGES.get(getStatStage(stat)));
     }
     
     private int statFormula(int baseStat, int IV, int EV, Modifier mod) {
