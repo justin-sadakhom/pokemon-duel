@@ -367,6 +367,9 @@ public class Battle implements ActionListener {
                 rivalChoice = rng.nextInt(4);
             
             playTurn(playerAction, actionArray[1], Action.ATTACK, rivalChoice);
+            
+            // Check if all the pokemon on either side have fainted.
+            
         }
     }
     
@@ -415,8 +418,7 @@ public class Battle implements ActionListener {
             else if (action == Action.ATTACK &&
                     playerMon.moves()[buttonChoice].PP() == 0)
 
-                displayText(playerMon.moves()[buttonChoice].name() + 
-                " has no uses left!",
+                displayText("There's no PP left for this move!",
                 "Select a different move.");
 
             waitForClick();
@@ -432,14 +434,33 @@ public class Battle implements ActionListener {
             Action rivalAction, int rivalChoice) {
         
         Pokemon faster = Pokemon.compareSpeed(playerMon, rivalMon);
-        Pokemon slower;
         
-        if (faster == playerMon)
-            slower = rivalMon;
-        else
-            slower = playerMon;
-        
-        
+        if (playerMon == faster) {
+            
+            if (playerAction == Action.SWITCH) {
+                processSwitch(playerMon, playerTeam[playerChoice]);
+                updateUI();
+            }
+            
+            if (rivalAction == Action.SWITCH) {
+                processSwitch(rivalMon, rivalTeam[rivalChoice]);
+                updateUI();
+            }
+            
+            if (playerAction == Action.ATTACK) {
+                processAttack(playerMon, playerChoice, rivalMon);
+                updateUI();
+                
+                // Check if fainted
+            }
+            
+            if (rivalAction == Action.ATTACK) {
+                processAttack(rivalMon, rivalChoice, playerMon);
+                updateUI();
+                
+                // Check if fainted
+            }
+        }
     }
     
     private void setPlayerPokemon(Pokemon pokemon) {
@@ -456,6 +477,84 @@ public class Battle implements ActionListener {
                 rivalMon.name().toLowerCase() + ".png"));
         displayText("Rival sends out " + rivalMon.name() + "!");
         delay(2);
+    }
+    
+    private void processSwitch(Pokemon out, Pokemon in) {
+        
+        displayText("Player withdraws " + out.name() + "!");
+        out.clearTempStatus();
+        out.resetStatStages();
+        delay(1.5);
+
+        playerMon = in;
+        displayText("Player sends out " + in.name() + "!");
+        delay(1.5);
+    }
+    
+    private void processAttack(Pokemon attacker, int slot, Pokemon defender) {
+        
+        Object[] result = attacker.immobilizedBy();
+        Status obstacle = (Status)result[0];
+        boolean blocked = (boolean)result[1];
+        
+        // Attacker had no status effects.
+        if (obstacle.loneStatus() == Status.LoneStatus.NONE &&
+                obstacle.mixStatus().isEmpty())
+            attacker.useMove(slot, defender);
+        
+        // Attacker had status effects, but broke through immobilization.
+        else if (!blocked) {
+                
+            switch (obstacle.loneStatus()) {
+
+                case FREEZE:
+                    displayText(attacker.name() + " thawed out!");
+
+                case SLEEP:
+                    displayText(attacker.name() + " woke up!");
+            }
+            
+            if (!obstacle.mixStatus().isEmpty()) {
+                
+                if (obstacle.mixStatus().contains(Status.MixStatus.CONFUSION)) {
+                    displayText(attacker.name() + " is confused!");
+                    delay(0.5);
+                    displayText(attacker.name() + " snapped out of confusion!");
+                }
+                
+                if (obstacle.mixStatus().contains(Status.MixStatus.INFATUATION)) {
+                    displayText(attacker.name() + " is in love"
+                            , "with the foe's " + defender.name() + "!");
+                    delay(1);
+                }
+            }
+        }
+        
+        // Attacker had status effects and was immobilized.
+        else {
+            
+            if (!obstacle.mixStatus().isEmpty()) {
+                
+                if (obstacle.mixStatus().contains(Status.MixStatus.RECHARGE))
+                    displayText(attacker.name() + " must recharge!");
+                
+                if (obstacle.mixStatus().contains(Status.MixStatus.CONFUSION)) {
+                    
+                    displayText(attacker.name() + " is confused!");
+                    delay(0.5);
+                    displayText("It hurt itself in confusion!");
+                    
+                    // Calculate and apply self-inflicted damage.
+                }
+                
+                if (obstacle.mixStatus().contains(Status.MixStatus.INFATUATION)) {
+                    displayText(attacker.name() + " is in love"
+                            , "with the foe's " + defender.name() + "!");
+                    delay(1);
+                    displayText(attacker.name() + " is immobilized by love!");
+                }
+            }
+        }
     }
     
     private static void startBattle() {

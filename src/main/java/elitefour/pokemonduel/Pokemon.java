@@ -95,7 +95,7 @@ public class Pokemon {
     private final Move[] moves;
     private final Nature nature;
     private Status status;
-    private int level;
+    private int level, sleepCounter, confusionCounter;
     
     /* Statistics fields */
     
@@ -270,12 +270,12 @@ public class Pokemon {
     }
     
     public boolean hasStatus(Status.LoneStatus status) {
-        return this.status.getLoneStatus().equals(status);
+        return this.status.loneStatus().equals(status);
     }
     
     public boolean hasStatus(Status.MixStatus status) {
         
-        ArrayList<Status.MixStatus> mixStatus = this.status.getMixStatus();
+        ArrayList<Status.MixStatus> mixStatus = this.status.mixStatus();
         
         for (int i = 0; i < mixStatus.size(); i++)
             if (mixStatus.get(i).equals(status))
@@ -291,6 +291,70 @@ public class Pokemon {
     public void clearStatus() {
         status.clearLoneStatus();
         status.clearMixStatus();
+    }
+    
+    public void clearTempStatus() {
+        status.clearMixStatus();
+    }
+    
+    public Object[] immobilizedBy() {
+        
+        Random rng = new Random();
+        Status obstacle = new Status();
+        
+        switch (status.loneStatus()) {
+            
+            case FREEZE:
+                obstacle.setLoneStatus(Status.LoneStatus.FREEZE);
+                
+                if (rng.nextInt(5) < 1)
+                    status.clearLoneStatus();
+                else
+                    return new Object[]{obstacle, true};
+               
+            case PARALYSIS:
+                obstacle.setLoneStatus(Status.LoneStatus.PARALYSIS);
+                
+                if (rng.nextInt(4) >= 1)
+                    return new Object[]{obstacle, true};
+                
+            case SLEEP:
+                sleepCounter -= 1;
+                obstacle.setLoneStatus(Status.LoneStatus.SLEEP);
+                
+                if (sleepCounter == 0)
+                    status.clearLoneStatus();
+                else
+                    return new Object[]{obstacle, true};
+        }
+        
+        if (!status.mixStatus().isEmpty()) {
+            
+            if (status.mixStatus().contains(Status.MixStatus.RECHARGE)) {
+                status.remove(Status.MixStatus.RECHARGE);
+                obstacle.addMixStatus(Status.MixStatus.RECHARGE);
+                return new Object[]{obstacle, true};
+            }
+            
+            if (status.mixStatus().contains(Status.MixStatus.CONFUSION)) {
+                confusionCounter -= 1;
+                obstacle.addMixStatus(Status.MixStatus.CONFUSION);
+                
+                if (confusionCounter == 0)
+                    status.clearMixStatus();
+                else
+                    return new Object[]{obstacle, true};
+            }
+            
+            if (status.mixStatus().contains(Status.MixStatus.INFATUATION)) {
+                obstacle.addMixStatus(Status.MixStatus.INFATUATION);
+                
+                if (rng.nextInt(2) >= 1)
+                    return new Object[]{obstacle, true};
+            }
+        }
+        
+        return new Object[]{obstacle, false};
     }
     
     public int level() {
@@ -525,6 +589,12 @@ public class Pokemon {
             statStages.put(stat, currentStage - amount);
         else
             statStages.put(stat, minStage);
+    }
+    
+    public void resetStatStages() {
+        statStages.keySet().forEach(key -> {
+            statStages.put(key, 0);
+        });
     }
     
     public int stat(Stat stat) {

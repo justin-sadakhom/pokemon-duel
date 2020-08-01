@@ -30,12 +30,11 @@ public class Status {
     private ArrayList<MixStatus> mixStatus;
     
     public Status() {
-        
         loneStatus = LoneStatus.NONE;
         mixStatus = new ArrayList<>();
     }
     
-    LoneStatus getLoneStatus() {
+    LoneStatus loneStatus() {
         return loneStatus;
     }
     
@@ -47,7 +46,7 @@ public class Status {
         loneStatus = LoneStatus.NONE;
     }
     
-    ArrayList<MixStatus> getMixStatus() {
+    ArrayList<MixStatus> mixStatus() {
         return mixStatus;
     }
     
@@ -55,7 +54,7 @@ public class Status {
         mixStatus.add(status);
     }
     
-    void removeMixStatus(MixStatus status) {
+    void remove(MixStatus status) {
         mixStatus.remove(status);
     }
     

@@ -41,7 +41,7 @@ public class DamageMove extends Move {
         return critical(user.hiddenStat(Pokemon.Stat.CRITICAL)) * random() *
                 STAB(user.type(), this.type()) *
                 typeAdvantage(this.type(), target.type()) *
-                burn(user.status().getLoneStatus(), this.category());
+                burn(user.status().loneStatus(), this.category());
     }
     
     private double critical(double critChance) {
