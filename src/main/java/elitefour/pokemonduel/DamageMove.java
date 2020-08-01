@@ -5,6 +5,12 @@ import java.util.Random;
 
 public class DamageMove extends Move {
     
+    public DamageMove(String name, Type type, Category category,
+            int pp, int power, int accuracy) {
+        
+        super(name, type, category, pp, power, accuracy);
+    }
+    
     @Override
     public void use(Pokemon user, Pokemon target) {
         target.deductHealth(damage(user, target));
@@ -16,26 +22,26 @@ public class DamageMove extends Move {
         int a, d;
         
         if (category().equals(Category.PHYSICAL)) {
-            a = user.getEffectiveStat(Pokemon.Stat.ATTACK);
-            d = target.getEffectiveStat(Pokemon.Stat.DEFENSE);
+            a = user.effectiveStat(Pokemon.Stat.ATTACK);
+            d = target.effectiveStat(Pokemon.Stat.DEFENSE);
         }
         
         else {
-            a = user.getEffectiveStat(Pokemon.Stat.SPECIAL_ATTACK);
-            d = target.getEffectiveStat(Pokemon.Stat.SPECIAL_DEFENSE);
+            a = user.effectiveStat(Pokemon.Stat.SPECIAL_ATTACK);
+            d = target.effectiveStat(Pokemon.Stat.SPECIAL_DEFENSE);
         }
         
-        int base = (((2 * user.getLevel()) / 5 + 2) * power() * a / d) / 50 + 2;
+        int base = (((2 * user.level()) / 5 + 2) * power() * a / d) / 50 + 2;
         
         return (int)(base * modifier(user, target));
     }
     
     private double modifier(Pokemon user, Pokemon target) {
         
-        return critical(user.getHiddenStat(Pokemon.Stat.CRITICAL)) * random() *
-                STAB(user.getType(), this.type()) *
-                typeAdvantage(this.type(), target.getType()) *
-                burn(user.getStatus(), this.category());
+        return critical(user.hiddenStat(Pokemon.Stat.CRITICAL)) * random() *
+                STAB(user.type(), this.type()) *
+                typeAdvantage(this.type(), target.type()) *
+                burn(user.status().getLoneStatus(), this.category());
     }
     
     private double critical(double critChance) {
@@ -86,7 +92,7 @@ public class DamageMove extends Move {
         return multiplier;
     }
     
-    private double burn(Status userStatus, Category moveCategory) {
+    private double burn(Status.LoneStatus userStatus, Category moveCategory) {
         
         if (userStatus.equals(Status.LoneStatus.BURN) &&
                 moveCategory.equals(Move.Category.PHYSICAL))

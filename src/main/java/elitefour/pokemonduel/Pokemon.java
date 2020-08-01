@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Random;
 import static java.util.Map.entry;
 
 enum Modifier {
@@ -239,15 +240,15 @@ public class Pokemon {
                 Stat.SPEED, species_stats[5]);
     }
     
-    public String getName() {
+    public String name() {
         return name;
     }
     
-    public Type[] getType() {
+    public Type[] type() {
         return type;
     }
     
-    public Move[] getMoves() {
+    public Move[] moves() {
         return moves;
     }
     
@@ -260,11 +261,11 @@ public class Pokemon {
         moves[slot - 1].use(this, target);
     }
     
-    public Nature getNature() {
+    public Nature nature() {
         return nature;
     }
     
-    public Status getStatus() {
+    public Status status() {
         return status;
     }
     
@@ -292,7 +293,7 @@ public class Pokemon {
         status.clearMixStatus();
     }
     
-    public int getLevel() {
+    public int level() {
         return level;
     }
     
@@ -440,6 +441,25 @@ public class Pokemon {
         }
     }
     
+    public static Pokemon compareSpeed(Pokemon first, Pokemon second) {
+        
+        if (first.stat(Stat.SPEED) > second.stat(Stat.SPEED))
+            return first;
+        
+        else if (first.stat(Stat.SPEED) < second.stat(Stat.SPEED))
+            return second;
+        
+        else {
+            Random coinFlip = new Random();
+            boolean heads = coinFlip.nextBoolean();
+            
+            if (heads)
+                return first;
+            else
+                return second;
+        }
+    }
+    
     public int currentHealth() {
         return currentHealth;
     }
@@ -454,13 +474,22 @@ public class Pokemon {
     
     public void restoreHealth(int healing) {
         
-        if (currentHealth + healing > getStat(Stat.HEALTH))
-            currentHealth = getStat(Stat.HEALTH);
+        if (currentHealth + healing > stat(Stat.HEALTH))
+            currentHealth = stat(Stat.HEALTH);
         else
             currentHealth += healing;
     }
     
-    public int getStatStage(Stat stat) {
+    public double healthPercent() {
+        return Math.floor((double)currentHealth /
+                (double)stats.get(Stat.HEALTH) * 100);
+    }
+    
+    public boolean isFainted() {
+        return currentHealth == 0;
+    }
+    
+    public int statStage(Stat stat) {
         return statStages.get(stat);
     }
     
@@ -473,7 +502,7 @@ public class Pokemon {
         else
             maxStage = 6;
             
-        int currentStage = getStatStage(stat);
+        int currentStage = statStage(stat);
         
         if (currentStage + amount <= maxStage)
             statStages.put(stat, currentStage + amount);
@@ -490,7 +519,7 @@ public class Pokemon {
         else
             minStage = -6;
         
-        int currentStage = getStatStage(stat);
+        int currentStage = statStage(stat);
         
         if (currentStage + amount >= minStage)
             statStages.put(stat, currentStage - amount);
@@ -498,29 +527,29 @@ public class Pokemon {
             statStages.put(stat, minStage);
     }
     
-    public int getStat(Stat stat) {
+    public int stat(Stat stat) {
         return stats.get(stat);
     }
     
-    public double getHiddenStat(Stat stat) {
+    public double hiddenStat(Stat stat) {
         switch(stat) {
             case ACCURACY:
                 return hiddenStats.get(stat) * 
-                        ACCURACY_STAT_STAGES.get(getStatStage(stat));
+                        ACCURACY_STAT_STAGES.get(statStage(stat));
                 
             case EVASION:
                 return hiddenStats.get(stat) * 
-                        EVASION_STAT_STAGES.get(getStatStage(stat));
+                        EVASION_STAT_STAGES.get(statStage(stat));
 
             default: // case CRITICAL
                 return hiddenStats.get(stat) * 
-                        CRIT_STAT_STAGES.get(getStatStage(stat));
+                        CRIT_STAT_STAGES.get(statStage(stat));
         }
     }
     
-    public int getEffectiveStat(Stat stat) {
-        return (int)(getStat(stat) * 
-                REGULAR_STAT_STAGES.get(getStatStage(stat)));
+    public int effectiveStat(Stat stat) {
+        return (int)(stat(stat) * 
+                REGULAR_STAT_STAGES.get(statStage(stat)));
     }
     
     private int statFormula(int baseStat, int IV, int EV, Modifier mod) {

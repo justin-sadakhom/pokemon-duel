@@ -38,4 +38,13 @@ public class InfoField extends JComponent {
             name.setBounds(145, 45, 150, 25);
         }
     }
+    
+    public void update(Pokemon pokemon) {
+        
+        double health = pokemon.healthPercent();
+        
+        healthBar.setBounds(355, 250, (int)(health * 1.5), 13);
+        healthPercent.setText("" + (int)health + '%');
+        name.setText("<html><font size=6>" + pokemon.name() + "</font></html>");
+    }
 }
