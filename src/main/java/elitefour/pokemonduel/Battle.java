@@ -179,8 +179,8 @@ public class Battle implements ActionListener {
         switches[4].setBounds(430, 475, 100, 33);
         switches[5].setBounds(535, 475, 100, 33);
         
-        for (int i = 0; i < moves.length; i++)
-            window.add(moves[i]);
+        for (JButton move : moves)
+            window.add(move);
         
         for (int i = 0; i < switches.length; i++) {
             window.add(switches[i]);
@@ -435,15 +435,16 @@ public class Battle implements ActionListener {
         
         Pokemon faster = Pokemon.compareSpeed(playerMon, rivalMon);
         
+        // Player moves first.
         if (playerMon == faster) {
             
             if (playerAction == Action.SWITCH) {
-                processSwitch(playerMon, playerTeam[playerChoice]);
+                processSwitch(playerMon, playerTeam[playerChoice], "Player");
                 updateUI();
             }
             
             if (rivalAction == Action.SWITCH) {
-                processSwitch(rivalMon, rivalTeam[rivalChoice]);
+                processSwitch(rivalMon, rivalTeam[rivalChoice], "Rival");
                 updateUI();
             }
             
@@ -451,14 +452,122 @@ public class Battle implements ActionListener {
                 processAttack(playerMon, playerChoice, rivalMon);
                 updateUI();
                 
-                // Check if fainted
+                if (rivalMon.currentHealth() == 0) {
+                    displayText(rivalMon.name() + " fainted!");
+                    delay(1);
+                    
+                    if (!stillStanding(rivalTeam))
+                        displayText("Rival is out of usable Pokemon!",
+                                "Player wins!");
+                    
+                    else {
+                        Random rng = new Random();
+                        int slot = rng.nextInt(6);
+                        
+                        while (rivalTeam[slot].currentHealth() == 0)
+                            slot = rng.nextInt(6);
+                        
+                        processSwitch(rivalMon, rivalTeam[slot], "Rival");
+                    }
+                }
             }
             
             if (rivalAction == Action.ATTACK) {
                 processAttack(rivalMon, rivalChoice, playerMon);
                 updateUI();
                 
-                // Check if fainted
+                if (playerMon.currentHealth() == 0) {
+                    displayText(playerMon.name() + " fainted!");
+                    delay(1);
+                    
+                    if (!stillStanding(playerTeam))
+                        displayText("Player is out of usable Pokemon!",
+                                "Rival wins!");
+                    
+                    else {
+                        displayText("Select a Pokemon to send in.");
+                        waitForClick();
+                        int slot = buttonChoice - 4;
+                        
+                        while (rivalTeam[slot].currentHealth() == 0) {
+                            displayText("But " + rivalTeam[slot].name() +
+                                    "is out of energy!",
+                                    "Select a Pokemon to send in.");
+                            waitForClick();
+                            slot = buttonChoice - 4;
+                        }
+                        
+                        processSwitch(playerMon, playerTeam[slot], "Player");
+                    }
+                }
+            }
+        }
+        
+        // Rival moves first.
+        else {
+            
+            if (rivalAction == Action.SWITCH) {
+                processSwitch(rivalMon, rivalTeam[rivalChoice], "Rival");
+                updateUI();
+            }
+            
+            if (playerAction == Action.SWITCH) {
+                processSwitch(playerMon, playerTeam[playerChoice], "Player");
+                updateUI();
+            }
+            
+            if (rivalAction == Action.ATTACK) {
+                processAttack(rivalMon, rivalChoice, playerMon);
+                updateUI();
+                
+                if (playerMon.currentHealth() == 0) {
+                    displayText(playerMon.name() + " fainted!");
+                    delay(1);
+                    
+                    if (!stillStanding(playerTeam))
+                        displayText("Player is out of usable Pokemon!",
+                                "Rival wins!");
+                    
+                    else {
+                        displayText("Select a Pokemon to send in.");
+                        waitForClick();
+                        int slot = buttonChoice - 4;
+                        
+                        while (rivalTeam[slot].currentHealth() == 0) {
+                            displayText("But " + rivalTeam[slot].name() +
+                                    "is out of energy!",
+                                    "Select a Pokemon to send in.");
+                            waitForClick();
+                            slot = buttonChoice - 4;
+                        }
+                        
+                        processSwitch(playerMon, playerTeam[slot], "Player");
+                    }
+                }
+            }
+            
+            if (playerAction == Action.ATTACK) {
+                processAttack(playerMon, playerChoice, rivalMon);
+                updateUI();
+                
+                if (rivalMon.currentHealth() == 0) {
+                    displayText(rivalMon.name() + " fainted!");
+                    delay(1);
+                    
+                    if (!stillStanding(rivalTeam))
+                        displayText("Rival is out of usable Pokemon!",
+                                "Player wins!");
+                    
+                    else {
+                        Random rng = new Random();
+                        int slot = rng.nextInt(6);
+                        
+                        while (rivalTeam[slot].currentHealth() == 0)
+                            slot = rng.nextInt(6);
+                        
+                        processSwitch(rivalMon, rivalTeam[slot], "Rival");
+                    }
+                }
             }
         }
     }
@@ -479,15 +588,19 @@ public class Battle implements ActionListener {
         delay(2);
     }
     
-    private void processSwitch(Pokemon out, Pokemon in) {
+    private void processSwitch(Pokemon out, Pokemon in, String user) {
         
-        displayText("Player withdraws " + out.name() + "!");
+        displayText(user + " withdraws " + out.name() + "!");
         out.clearTempStatus();
         out.resetStatStages();
         delay(1.5);
 
-        playerMon = in;
-        displayText("Player sends out " + in.name() + "!");
+        if (user.equals("Player"))
+            playerMon = in;
+        else
+            rivalMon = in;
+        
+        displayText(user + " sends out " + in.name() + "!");
         delay(1.5);
     }
     
@@ -528,6 +641,8 @@ public class Battle implements ActionListener {
                     delay(1);
                 }
             }
+            
+            attacker.useMove(slot, defender);
         }
         
         // Attacker had status effects and was immobilized.
