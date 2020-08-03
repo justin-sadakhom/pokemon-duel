@@ -532,12 +532,21 @@ public class Pokemon {
         return currentHealth;
     }
     
-    public void deductHealth(int damage) {
+    public int deductHealth(int damage) {
         
-        if (currentHealth - damage < 0)
+        int deduction;
+        
+        if (currentHealth - damage < 0) {
+            deduction = currentHealth;
             currentHealth = 0;
-        else
+        }
+        
+        else {
+            deduction = currentHealth - damage;
             currentHealth -= damage;
+        }
+        
+        return deduction;
     }
     
     public void restoreHealth(int healing) {

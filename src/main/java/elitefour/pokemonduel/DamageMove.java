@@ -12,9 +12,9 @@ public class DamageMove extends Move {
     }
     
     @Override
-    public void use(Pokemon user, Pokemon target) {
-        target.deductHealth(damage(user, target));
+    public int use(Pokemon user, Pokemon target) {
         deductPP(1);
+        return target.deductHealth(damage(user, target));
     }
     
     private int damage(Pokemon user, Pokemon target) {

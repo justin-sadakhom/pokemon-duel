@@ -73,5 +73,5 @@ public abstract class Move {
         return accuracy;
     }
     
-    public abstract void use(Pokemon user, Pokemon target);
+    public abstract int use(Pokemon user, Pokemon target);
 }

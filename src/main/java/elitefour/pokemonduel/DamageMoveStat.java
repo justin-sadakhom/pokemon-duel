@@ -17,14 +17,15 @@ public class DamageMoveStat extends DamageMove {
     }
     
     @Override
-    public void use(Pokemon user, Pokemon target) {
+    public int use(Pokemon user, Pokemon target) {
         
-        super.use(user, target);
-        
+        int damage = super.use(user, target);
         Random rng = new Random();
         
         if (rng.nextInt(effectChance) < 100)
             applyEffect(target);
+        
+        return damage;
     }
     
     private void applyEffect(Pokemon target) {
