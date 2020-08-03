@@ -284,8 +284,12 @@ public class Pokemon {
         return false;
     }
     
-    public void setStatus(Status newStatus) {
-        status = newStatus;
+    public void setStatus(Status.LoneStatus status) {
+        this.status.setLoneStatus(status);
+    }
+    
+    public void setStatus(Status.MixStatus status) {
+        this.status.addMixStatus(status);
     }
     
     public void clearStatus() {

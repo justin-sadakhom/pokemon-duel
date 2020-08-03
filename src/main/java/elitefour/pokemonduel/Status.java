@@ -27,7 +27,7 @@ public class Status {
     }
     
     private LoneStatus loneStatus;
-    private ArrayList<MixStatus> mixStatus;
+    private final ArrayList<MixStatus> mixStatus;
     
     public Status() {
         loneStatus = LoneStatus.NONE;

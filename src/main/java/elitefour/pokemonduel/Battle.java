@@ -367,9 +367,6 @@ public class Battle implements ActionListener {
                 rivalChoice = rng.nextInt(4);
             
             playTurn(playerAction, actionArray[1], Action.ATTACK, rivalChoice);
-            
-            // Check if all the pokemon on either side have fainted.
-            
         }
     }
     
