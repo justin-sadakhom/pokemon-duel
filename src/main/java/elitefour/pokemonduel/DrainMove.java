@@ -9,9 +9,9 @@ public class DrainMove extends DamageMove {
     }
     
     @Override
-    public int use(Pokemon user, Pokemon target) {
-        int damage = super.use(user, target);
-        user.restoreHealth(damage / 2);
-        return damage;
+    public Object[] use(Pokemon user, Pokemon target) {
+        Object[] result = super.use(user, target);
+        user.restoreHealth((int)result[0] / 2);
+        return new Object[]{result[0], true};
     }
 }

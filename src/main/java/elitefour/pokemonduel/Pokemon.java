@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Random;
@@ -257,8 +258,8 @@ public class Pokemon {
         moves[index] = move;
     }
     
-    public void useMove(int slot, Pokemon target) {
-        moves[slot - 1].use(this, target);
+    public Object[] useMove(int slot, Pokemon target) {
+        return moves[slot - 1].use(this, target);
     }
     
     public Nature nature() {
@@ -267,6 +268,10 @@ public class Pokemon {
     
     public Status status() {
         return status;
+    }
+    
+    public boolean hasStatus() {
+        return status.loneStatus() != Status.LoneStatus.NONE;
     }
     
     public boolean hasStatus(Status.LoneStatus status) {
@@ -284,12 +289,34 @@ public class Pokemon {
         return false;
     }
     
-    public void setStatus(Status.LoneStatus status) {
-        this.status.setLoneStatus(status);
+    public boolean setStatus(Status.LoneStatus status) {
+        
+        if (hasStatus())
+            return false;
+        
+        else if ((Arrays.asList(type).contains(Type.POISON) || 
+                Arrays.asList(type).contains(Type.STEEL)) && 
+                status == Status.LoneStatus.POISON)
+            return false;
+        
+        else if (Arrays.asList(type).contains(Type.FIRE) &&
+                status == Status.LoneStatus.BURN)
+            return false;
+        
+        else {
+            this.status.setLoneStatus(status);
+            return true;
+        }
     }
     
-    public void setStatus(Status.MixStatus status) {
-        this.status.addMixStatus(status);
+    public boolean setStatus(Status.MixStatus status) {
+        
+        if (hasStatus(status))
+            return false;
+        else {
+            this.status.addMixStatus(status);
+            return true;
+        }
     }
     
     public void clearStatus() {
@@ -570,7 +597,7 @@ public class Pokemon {
         return statStages.get(stat);
     }
     
-    public void raiseStatStage(Stat stat, int amount) {
+    public boolean raiseStatStage(Stat stat, int amount) {
         
         int maxStage;
         
@@ -581,13 +608,17 @@ public class Pokemon {
             
         int currentStage = statStage(stat);
         
-        if (currentStage + amount <= maxStage)
+        if (currentStage + amount <= maxStage) {
             statStages.put(stat, currentStage + amount);
-        else
+            return true;
+        }
+        else {
             statStages.put(stat, maxStage);
+            return false;
+        }
     }
     
-    public void lowerStatStage(Stat stat, int amount) {
+    public boolean lowerStatStage(Stat stat, int amount) {
         
         int minStage;
         
@@ -598,10 +629,14 @@ public class Pokemon {
         
         int currentStage = statStage(stat);
         
-        if (currentStage + amount >= minStage)
+        if (currentStage + amount >= minStage) {
             statStages.put(stat, currentStage - amount);
-        else
+            return true;
+        }
+        else {
             statStages.put(stat, minStage);
+            return false;
+        }
     }
     
     public void resetStatStages() {

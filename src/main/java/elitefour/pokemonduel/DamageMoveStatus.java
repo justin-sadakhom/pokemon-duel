@@ -16,21 +16,22 @@ public class DamageMoveStatus extends DamageMove {
     }
     
     @Override
-    public int use(Pokemon user, Pokemon target) {
+    public Object[] use(Pokemon user, Pokemon target) {
         
-        int damage = super.use(user, target);
+        Object[] results = super.use(user, target);
         Random rng = new Random();
+        boolean success = true;
         
         if (rng.nextInt(effectChance) < 100)
-            applyEffect(target);
+            success = applyEffect(target);
         
-        return damage;
+        return new Object[]{results[0], success};
     }
     
-    private void applyEffect(Pokemon target) {
+    private boolean applyEffect(Pokemon target) {
         if (appliedStatus.mixStatus().isEmpty())
-            target.setStatus(appliedStatus.loneStatus());
+            return target.setStatus(appliedStatus.loneStatus());
         else
-            target.setStatus(appliedStatus.mixStatus().get(0));
+            return target.setStatus(appliedStatus.mixStatus().get(0));
     }
 }

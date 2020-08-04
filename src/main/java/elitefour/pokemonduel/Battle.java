@@ -609,8 +609,49 @@ public class Battle implements ActionListener {
         
         // Attacker had no status effects.
         if (obstacle.loneStatus() == Status.LoneStatus.NONE &&
-                obstacle.mixStatus().isEmpty())
-            attacker.useMove(slot, defender);
+                obstacle.mixStatus().isEmpty()) {
+            
+            Move move = attacker.moves()[slot];
+            
+            displayText(attacker.name() + " used " + move.name() + "!");
+            Object[] moveResult = attacker.useMove(slot, defender);
+            delay(0.5);
+            
+            if (move instanceof DamageMoveStat) {
+                
+                int stages = ((DamageMoveStat)move).stages();
+                String message = defender.name() + "'s " + 
+                        ((DamageMoveStat)move).affectedStat().toLowerCase();
+                
+                // Affected stat stage is already at max / min.
+                if (!(boolean)moveResult[1]) {
+                    
+                    if (((DamageMoveStat) move).stages() > 0)
+                        displayText(message + " won't go any higher!");
+                    else
+                        displayText(message + " won't go any lower!");
+                }
+                
+                // There's still room for change.
+                else {
+                    
+                    switch (stages) {
+                        case 1:
+                            displayText(message + " rose!");
+                            break;
+                        case 2:
+                            displayText(message + " rose sharply!");
+                            break;
+                        case -1:
+                            displayText(message + " fell!");
+                            break;
+                        default: // case -2
+                            displayText(message + " fell sharply!");
+                            break;
+                    }
+                }
+            }
+        }
         
         // Attacker had status effects, but broke through immobilization.
         else if (!blocked) {

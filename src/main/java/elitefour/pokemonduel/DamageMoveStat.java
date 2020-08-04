@@ -17,22 +17,31 @@ public class DamageMoveStat extends DamageMove {
     }
     
     @Override
-    public int use(Pokemon user, Pokemon target) {
+    public Object[] use(Pokemon user, Pokemon target) {
         
-        int damage = super.use(user, target);
+        Object results[] = super.use(user, target);
         Random rng = new Random();
+        boolean success = false;
         
         if (rng.nextInt(effectChance) < 100)
-            applyEffect(target);
+            success = applyEffect(target);
         
-        return damage;
+        return new Object[]{results[0], success};
     }
     
-    private void applyEffect(Pokemon target) {
+    private boolean applyEffect(Pokemon target) {
         
         if (stages > 0)
-            target.raiseStatStage(affectedStat, stages);
+            return target.raiseStatStage(affectedStat, stages);
         else
-            target.lowerStatStage(affectedStat, stages);
+            return target.lowerStatStage(affectedStat, stages);
+    }
+    
+    public int stages() {
+        return stages;
+    }
+    
+    public String affectedStat() {
+        return affectedStat.name();
     }
 }
