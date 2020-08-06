@@ -33,11 +33,7 @@ public class DamageDebuff extends DamageMove {
     }
     
     private boolean applyEffect(Pokemon target) {
-        
-        if (stages > 0)
-            return target.raiseStatStage(affectedStat, stages);
-        else
-            return target.lowerStatStage(affectedStat, stages);
+        return target.lowerStatStage(affectedStat, stages);
     }
     
     public int stages() {
@@ -52,23 +48,14 @@ public class DamageDebuff extends DamageMove {
         
         String message = name + "'s " + move.affectedStat().toLowerCase();
         
-        // Affected stat stage is already at max / min.
-        if (!success) {
-
-            if (move.stages() > 0)
-                return message + " won't go any higher!";
-            else
-                return message + " won't go any lower!";
-        }
+        // Affected stat stage is already at min.
+        if (!success)
+            return message + " won't go any lower!";
 
         // There's still room for change.
         else {
 
             switch (move.stages()) {
-                case 1:
-                    return message + " rose!";
-                case 2:
-                    return message + " rose sharply!";
                 case -1:
                     return message + " fell!";
                 default: // case -2
