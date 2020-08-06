@@ -73,5 +73,5 @@ public abstract class Move {
         return accuracy;
     }
     
-    public abstract Object[] use(Pokemon user, Pokemon target);
+    public abstract int use(Pokemon user, Pokemon target);
 }

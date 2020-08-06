@@ -12,9 +12,9 @@ public class DamageMove extends Move {
     }
     
     @Override
-    public Object[] use(Pokemon user, Pokemon target) {
+    public int use(Pokemon user, Pokemon target) {
         deductPP(1);
-        return new Object[]{target.deductHealth(damage(user, target)), true};
+        return target.deductHealth(damage(user, target));
     }
     
     private int damage(Pokemon user, Pokemon target) {
@@ -55,7 +55,7 @@ public class DamageMove extends Move {
             return 1.0;
     }
     
-    private double random() {
+    private static double random() {
 
         Random rng = new Random();
         return (rng.nextInt(15) + 85) / 100;
@@ -69,7 +69,7 @@ public class DamageMove extends Move {
             return 1.0;
     }
     
-    private double typeAdvantage(Type moveType, Type[] targetType) {
+    public static double typeAdvantage(Type moveType, Type[] targetType) {
         
         double multiplier = 1.0;
         
@@ -99,5 +99,27 @@ public class DamageMove extends Move {
             return 0.5;
         else
             return 1.0;
+    }
+    
+    public static int confusionDamage(Pokemon victim) {
+        
+        final int POWER = 40;
+        int a = victim.stat(Pokemon.Stat.ATTACK);
+        int d = victim.stat(Pokemon.Stat.DEFENSE);
+        
+        return (int)((((2 * victim.level()) / 5 + 2) * POWER * a / d) / 50 + 2 * 
+                random());
+    }
+    
+    public static String text(Type moveType, Type[] defenderType) {
+        
+        double multiplier = typeAdvantage(moveType, defenderType);
+
+        if (multiplier == 2.0)
+            return "It was super effective!";
+        else if (multiplier == 0.5)
+            return "It's not very effective...";
+        else // multiplier == 0
+            return "It had no effect...";
     }
 }

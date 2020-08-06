@@ -17,16 +17,19 @@ public class DamageMoveStat extends DamageMove {
     }
     
     @Override
-    public Object[] use(Pokemon user, Pokemon target) {
+    public int use(Pokemon user, Pokemon target) {
+        return super.use(user, target);
+    }
+    
+    public boolean useSecondary(Pokemon user, Pokemon target) {
         
-        Object results[] = super.use(user, target);
         Random rng = new Random();
-        boolean success = false;
+        boolean result = false;
         
         if (rng.nextInt(effectChance) < 100)
-            success = applyEffect(target);
+            result = applyEffect(target);
         
-        return new Object[]{results[0], success};
+        return result;
     }
     
     private boolean applyEffect(Pokemon target) {
@@ -43,5 +46,34 @@ public class DamageMoveStat extends DamageMove {
     
     public String affectedStat() {
         return affectedStat.name();
+    }
+    
+    public static String text(String name, DamageMoveStat move, boolean success) {
+        
+        String message = name + "'s " + move.affectedStat().toLowerCase();
+        
+        // Affected stat stage is already at max / min.
+        if (!success) {
+
+            if (move.stages() > 0)
+                return message + " won't go any higher!";
+            else
+                return message + " won't go any lower!";
+        }
+
+        // There's still room for change.
+        else {
+
+            switch (move.stages()) {
+                case 1:
+                    return message + " rose!";
+                case 2:
+                    return message + " rose sharply!";
+                case -1:
+                    return message + " fell!";
+                default: // case -2
+                    return message + " fell sharply!";
+            }
+        }
     }
 }

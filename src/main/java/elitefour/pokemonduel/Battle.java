@@ -436,17 +436,17 @@ public class Battle implements ActionListener {
         if (playerMon == faster) {
             
             if (playerAction == Action.SWITCH) {
-                processSwitch(playerMon, playerTeam[playerChoice], "Player");
+                attemptSwitch(playerMon, playerTeam[playerChoice], "Player");
                 updateUI();
             }
             
             if (rivalAction == Action.SWITCH) {
-                processSwitch(rivalMon, rivalTeam[rivalChoice], "Rival");
+                attemptSwitch(rivalMon, rivalTeam[rivalChoice], "Rival");
                 updateUI();
             }
             
             if (playerAction == Action.ATTACK) {
-                processAttack(playerMon, playerChoice, rivalMon);
+                attemptAttack(playerMon, playerChoice, rivalMon);
                 updateUI();
                 
                 if (rivalMon.currentHealth() == 0) {
@@ -464,13 +464,13 @@ public class Battle implements ActionListener {
                         while (rivalTeam[slot].currentHealth() == 0)
                             slot = rng.nextInt(6);
                         
-                        processSwitch(rivalMon, rivalTeam[slot], "Rival");
+                        attemptSwitch(rivalMon, rivalTeam[slot], "Rival");
                     }
                 }
             }
             
             if (rivalAction == Action.ATTACK) {
-                processAttack(rivalMon, rivalChoice, playerMon);
+                attemptAttack(rivalMon, rivalChoice, playerMon);
                 updateUI();
                 
                 if (playerMon.currentHealth() == 0) {
@@ -494,7 +494,7 @@ public class Battle implements ActionListener {
                             slot = buttonChoice - 4;
                         }
                         
-                        processSwitch(playerMon, playerTeam[slot], "Player");
+                        attemptSwitch(playerMon, playerTeam[slot], "Player");
                     }
                 }
             }
@@ -504,17 +504,17 @@ public class Battle implements ActionListener {
         else {
             
             if (rivalAction == Action.SWITCH) {
-                processSwitch(rivalMon, rivalTeam[rivalChoice], "Rival");
+                attemptSwitch(rivalMon, rivalTeam[rivalChoice], "Rival");
                 updateUI();
             }
             
             if (playerAction == Action.SWITCH) {
-                processSwitch(playerMon, playerTeam[playerChoice], "Player");
+                attemptSwitch(playerMon, playerTeam[playerChoice], "Player");
                 updateUI();
             }
             
             if (rivalAction == Action.ATTACK) {
-                processAttack(rivalMon, rivalChoice, playerMon);
+                attemptAttack(rivalMon, rivalChoice, playerMon);
                 updateUI();
                 
                 if (playerMon.currentHealth() == 0) {
@@ -538,13 +538,13 @@ public class Battle implements ActionListener {
                             slot = buttonChoice - 4;
                         }
                         
-                        processSwitch(playerMon, playerTeam[slot], "Player");
+                        attemptSwitch(playerMon, playerTeam[slot], "Player");
                     }
                 }
             }
             
             if (playerAction == Action.ATTACK) {
-                processAttack(playerMon, playerChoice, rivalMon);
+                attemptAttack(playerMon, playerChoice, rivalMon);
                 updateUI();
                 
                 if (rivalMon.currentHealth() == 0) {
@@ -562,7 +562,7 @@ public class Battle implements ActionListener {
                         while (rivalTeam[slot].currentHealth() == 0)
                             slot = rng.nextInt(6);
                         
-                        processSwitch(rivalMon, rivalTeam[slot], "Rival");
+                        attemptSwitch(rivalMon, rivalTeam[slot], "Rival");
                     }
                 }
             }
@@ -585,7 +585,7 @@ public class Battle implements ActionListener {
         delay(2);
     }
     
-    private void processSwitch(Pokemon out, Pokemon in, String user) {
+    private void attemptSwitch(Pokemon out, Pokemon in, String user) {
         
         displayText(user + " withdraws " + out.name() + "!");
         out.clearTempStatus();
@@ -601,59 +601,17 @@ public class Battle implements ActionListener {
         delay(1.5);
     }
     
-    private void processAttack(Pokemon attacker, int slot, Pokemon defender) {
+    private void attemptAttack(Pokemon attacker, int slot, Pokemon defender) {
         
         Object[] result = attacker.immobilizedBy();
         Status obstacle = (Status)result[0];
         boolean blocked = (boolean)result[1];
         
         // Attacker had no status effects.
-        if (obstacle.loneStatus() == Status.LoneStatus.NONE &&
-                obstacle.mixStatus().isEmpty()) {
-            
-            Move move = attacker.moves()[slot];
-            
-            displayText(attacker.name() + " used " + move.name() + "!");
-            Object[] moveResult = attacker.useMove(slot, defender);
-            delay(0.5);
-            
-            if (move instanceof DamageMoveStat) {
-                
-                int stages = ((DamageMoveStat)move).stages();
-                String message = defender.name() + "'s " + 
-                        ((DamageMoveStat)move).affectedStat().toLowerCase();
-                
-                // Affected stat stage is already at max / min.
-                if (!(boolean)moveResult[1]) {
-                    
-                    if (((DamageMoveStat) move).stages() > 0)
-                        displayText(message + " won't go any higher!");
-                    else
-                        displayText(message + " won't go any lower!");
-                }
-                
-                // There's still room for change.
-                else {
-                    
-                    switch (stages) {
-                        case 1:
-                            displayText(message + " rose!");
-                            break;
-                        case 2:
-                            displayText(message + " rose sharply!");
-                            break;
-                        case -1:
-                            displayText(message + " fell!");
-                            break;
-                        default: // case -2
-                            displayText(message + " fell sharply!");
-                            break;
-                    }
-                }
-            }
-        }
+        if (obstacle.isEmpty())
+            processAttack(attacker, slot, defender);
         
-        // Attacker had status effects, but broke through immobilization.
+        // Display battle text for attacker breaking through immobilization.
         else if (!blocked) {
                 
             switch (obstacle.loneStatus()) {
@@ -669,7 +627,7 @@ public class Battle implements ActionListener {
                 
                 if (obstacle.mixStatus().contains(Status.MixStatus.CONFUSION)) {
                     displayText(attacker.name() + " is confused!");
-                    delay(0.5);
+                    delay(1);
                     displayText(attacker.name() + " snapped out of confusion!");
                 }
                 
@@ -680,13 +638,29 @@ public class Battle implements ActionListener {
                 }
             }
             
-            attacker.useMove(slot, defender);
+            processAttack(attacker, slot, defender);
         }
         
-        // Attacker had status effects and was immobilized.
+        // Display battle text for attacker being immobilized.
         else {
             
-            if (!obstacle.mixStatus().isEmpty()) {
+            if (obstacle.loneStatus() != Status.LoneStatus.NONE) {
+                
+                switch (obstacle.loneStatus()) {
+                    
+                    case FREEZE:
+                        displayText(attacker.name() + " is frozen solid!");
+                        
+                    case PARALYSIS:
+                        displayText(attacker.name() + " is paralyzed!",
+                                "It can't move!");
+                        
+                    case SLEEP:
+                        displayText(attacker.name() + " is fast asleep.");
+                }
+            }
+            
+            else {
                 
                 if (obstacle.mixStatus().contains(Status.MixStatus.RECHARGE))
                     displayText(attacker.name() + " must recharge!");
@@ -694,10 +668,11 @@ public class Battle implements ActionListener {
                 if (obstacle.mixStatus().contains(Status.MixStatus.CONFUSION)) {
                     
                     displayText(attacker.name() + " is confused!");
-                    delay(0.5);
+                    delay(1);
                     displayText("It hurt itself in confusion!");
                     
                     // Calculate and apply self-inflicted damage.
+                    defender.deductHealth(DamageMove.confusionDamage(defender));
                 }
                 
                 if (obstacle.mixStatus().contains(Status.MixStatus.INFATUATION)) {
@@ -705,8 +680,47 @@ public class Battle implements ActionListener {
                             , "with the foe's " + defender.name() + "!");
                     delay(1);
                     displayText(attacker.name() + " is immobilized by love!");
+                    updateUI();
                 }
             }
+        }
+    }
+    
+    private void processAttack(Pokemon attacker, int slot, Pokemon defender) {
+        
+        Move move = attacker.moves()[slot];
+        displayText(attacker.name() + " used " + move.name() + "!");
+        delay(0.5);
+
+        int damage = attacker.useMove(slot, defender);
+
+        // Display battle text for move effectiveness.
+        if (move instanceof DamageMove) {
+
+            double multiplier = 
+                    DamageMove.typeAdvantage(move.type(), defender.type());
+
+            if (multiplier != 1.0) {
+                displayText(DamageMove.text(move.type(), defender.type()));
+                delay(0.5);
+            }
+        }
+
+        // Display battle text for stat changes.
+        if (move instanceof DamageMoveStat) {
+            
+            boolean success = ((DamageMoveStat)move).
+                    useSecondary(defender, attacker);
+            displayText(DamageMoveStat.text(defender.name(),
+                    (DamageMoveStat)move, success));
+            delay(0.5);
+        }
+        
+        // Display battle text for drain heal.
+        else if (move instanceof DrainMove) {
+            ((DrainMove)move).useSecondary(attacker, defender, damage);
+            displayText(DrainMove.text(defender.name()));
+            delay(0.5);
         }
     }
     

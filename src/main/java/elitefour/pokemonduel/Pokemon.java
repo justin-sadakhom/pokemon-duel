@@ -258,7 +258,7 @@ public class Pokemon {
         moves[index] = move;
     }
     
-    public Object[] useMove(int slot, Pokemon target) {
+    public int useMove(int slot, Pokemon target) {
         return moves[slot - 1].use(this, target);
     }
     
@@ -271,7 +271,7 @@ public class Pokemon {
     }
     
     public boolean hasStatus() {
-        return status.loneStatus() != Status.LoneStatus.NONE;
+        return !status.isEmpty();
     }
     
     public boolean hasStatus(Status.LoneStatus status) {
@@ -562,6 +562,9 @@ public class Pokemon {
     public int deductHealth(int damage) {
         
         int deduction;
+        
+        if (damage < 0)
+            damage = 1;
         
         if (currentHealth - damage < 0) {
             deduction = currentHealth;

@@ -61,4 +61,8 @@ public class Status {
     void clearMixStatus() {
         mixStatus.clear();
     }
+    
+    public boolean isEmpty() {
+        return loneStatus == Status.LoneStatus.NONE && mixStatus.isEmpty();
+    }
 }
