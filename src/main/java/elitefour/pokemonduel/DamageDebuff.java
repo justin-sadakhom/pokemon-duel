@@ -44,7 +44,7 @@ public class DamageDebuff extends DamageMove {
         return affectedStat.name();
     }
     
-    public static String text(String name, DamageDebuff move, boolean success) {
+    public static String hitText(String name, DamageDebuff move, boolean success) {
         
         String message = name + "'s " + move.affectedStat().toLowerCase();
         
