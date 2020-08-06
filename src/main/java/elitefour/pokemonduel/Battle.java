@@ -614,6 +614,7 @@ public class Battle implements ActionListener {
         // Display battle text for attacker breaking through immobilization.
         else if (!blocked) {
                 
+            // Check volatile status.
             switch (obstacle.loneStatus()) {
 
                 case FREEZE:
@@ -623,6 +624,7 @@ public class Battle implements ActionListener {
                     displayText(attacker.name() + " woke up!");
             }
             
+            // Check non-volatile status.
             if (!obstacle.mixStatus().isEmpty()) {
                 
                 if (obstacle.mixStatus().contains(Status.MixStatus.CONFUSION)) {
@@ -644,6 +646,7 @@ public class Battle implements ActionListener {
         // Display battle text for attacker being immobilized.
         else {
             
+            // Check volatile status.
             if (obstacle.loneStatus() != Status.LoneStatus.NONE) {
                 
                 switch (obstacle.loneStatus()) {
@@ -660,6 +663,7 @@ public class Battle implements ActionListener {
                 }
             }
             
+            // Check non-volatile status.
             else {
                 
                 if (obstacle.mixStatus().contains(Status.MixStatus.RECHARGE))
