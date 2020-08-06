@@ -430,139 +430,136 @@ public class Battle implements ActionListener {
     private void playTurn(Action playerAction, int playerChoice,
             Action rivalAction, int rivalChoice) {
         
-        Pokemon faster = Pokemon.compareSpeed(playerMon, rivalMon);
+        Action firstAction, secondAction;
+        int firstChoice, secondChoice;
+        Pokemon faster, slower;
+        Pokemon[] fasterTeam, slowerTeam;
+        String firstName, secondName;
         
-        // Player moves first.
+        faster = Pokemon.compareSpeed(playerMon, rivalMon);
+        
         if (playerMon == faster) {
-            
-            if (playerAction == Action.SWITCH) {
-                attemptSwitch(playerMon, playerTeam[playerChoice], "Player");
-                updateUI();
-            }
-            
-            if (rivalAction == Action.SWITCH) {
-                attemptSwitch(rivalMon, rivalTeam[rivalChoice], "Rival");
-                updateUI();
-            }
-            
-            if (playerAction == Action.ATTACK) {
-                attemptAttack(playerMon, playerChoice, rivalMon);
-                updateUI();
-                
-                if (rivalMon.currentHealth() == 0) {
-                    displayText(rivalMon.name() + " fainted!");
-                    delay(1);
+            firstAction = playerAction;
+            firstChoice = playerChoice;
+            secondAction = rivalAction;
+            secondChoice = rivalChoice;
+            slower = rivalMon;
+            fasterTeam = playerTeam;
+            slowerTeam = rivalTeam;
+            firstName = "Player";
+            secondName = "Rival";
+        }
+        else {
+            firstAction = rivalAction;
+            firstChoice = rivalChoice;
+            secondAction = playerAction;
+            secondChoice = playerChoice;
+            slower = playerMon;
+            fasterTeam = rivalTeam;
+            slowerTeam = playerTeam;
+            firstName = "Rival";
+            secondName = "Player";
+        }
+        
+        // Faster player switches.
+        if (firstAction == Action.SWITCH) {
+            attemptSwitch(faster, fasterTeam[firstChoice], firstName);
+            updateUI();
+        }
+        
+        // Slower player switches.
+        if (secondAction == Action.SWITCH) {
+            attemptSwitch(slower, slowerTeam[secondChoice], secondName);
+            updateUI();
+        }
+        
+        // Faster player attacks.
+        if (firstAction == Action.ATTACK) {
+            attemptAttack(faster, firstChoice, slower);
+            updateUI();
+
+            if (slower.isFainted()) {
+                displayText(slower.name() + " fainted!");
+                delay(1);
+
+                if (!stillStanding(slowerTeam))
+                    displayText(secondName + " is out of usable Pokemon!",
+                            firstName + " wins!");
+
+                else {
                     
-                    if (!stillStanding(rivalTeam))
-                        displayText("Rival is out of usable Pokemon!",
-                                "Player wins!");
-                    
-                    else {
-                        Random rng = new Random();
-                        int slot = rng.nextInt(6);
+                    if (secondName.equals("Player")) {
                         
-                        while (rivalTeam[slot].currentHealth() == 0)
-                            slot = rng.nextInt(6);
-                        
-                        attemptSwitch(rivalMon, rivalTeam[slot], "Rival");
-                    }
-                }
-            }
-            
-            if (rivalAction == Action.ATTACK) {
-                attemptAttack(rivalMon, rivalChoice, playerMon);
-                updateUI();
-                
-                if (playerMon.currentHealth() == 0) {
-                    displayText(playerMon.name() + " fainted!");
-                    delay(1);
-                    
-                    if (!stillStanding(playerTeam))
-                        displayText("Player is out of usable Pokemon!",
-                                "Rival wins!");
-                    
-                    else {
                         displayText("Select a Pokemon to send in.");
                         waitForClick();
                         int slot = buttonChoice - 4;
-                        
-                        while (rivalTeam[slot].currentHealth() == 0) {
-                            displayText("But " + rivalTeam[slot].name() +
+
+                        while (slowerTeam[slot].isFainted()) {
+                            displayText("But " + slowerTeam[slot].name() +
                                     "is out of energy!",
                                     "Select a Pokemon to send in.");
                             waitForClick();
                             slot = buttonChoice - 4;
                         }
+
+                        attemptSwitch(slower, slowerTeam[slot], secondName);
+                    }
+                    
+                    else {
                         
-                        attemptSwitch(playerMon, playerTeam[slot], "Player");
+                        Random rng = new Random();
+                        int slot = rng.nextInt(6);
+
+                        while (slowerTeam[slot].isFainted())
+                            slot = rng.nextInt(6);
+
+                        attemptSwitch(slower, slowerTeam[slot], secondName);
                     }
                 }
             }
         }
         
-        // Rival moves first.
-        else {
-            
-            if (rivalAction == Action.SWITCH) {
-                attemptSwitch(rivalMon, rivalTeam[rivalChoice], "Rival");
-                updateUI();
-            }
-            
-            if (playerAction == Action.SWITCH) {
-                attemptSwitch(playerMon, playerTeam[playerChoice], "Player");
-                updateUI();
-            }
-            
-            if (rivalAction == Action.ATTACK) {
-                attemptAttack(rivalMon, rivalChoice, playerMon);
-                updateUI();
-                
-                if (playerMon.currentHealth() == 0) {
-                    displayText(playerMon.name() + " fainted!");
-                    delay(1);
+        // Slower player attacks.
+        if (secondAction == Action.ATTACK) {
+            attemptAttack(slower, secondChoice, faster);
+            updateUI();
+
+            if (faster.isFainted()) {
+                displayText(faster.name() + " fainted!");
+                delay(1);
+
+                if (!stillStanding(fasterTeam))
+                    displayText(firstName + " is out of usable Pokemon!",
+                            secondName + " wins!");
+
+                else {
                     
-                    if (!stillStanding(playerTeam))
-                        displayText("Player is out of usable Pokemon!",
-                                "Rival wins!");
-                    
-                    else {
+                    if (firstName.equals("Player")) {
+                        
                         displayText("Select a Pokemon to send in.");
                         waitForClick();
                         int slot = buttonChoice - 4;
-                        
-                        while (rivalTeam[slot].currentHealth() == 0) {
-                            displayText("But " + rivalTeam[slot].name() +
+
+                        while (fasterTeam[slot].isFainted()) {
+                            displayText("But " + fasterTeam[slot].name() +
                                     "is out of energy!",
                                     "Select a Pokemon to send in.");
                             waitForClick();
                             slot = buttonChoice - 4;
                         }
-                        
-                        attemptSwitch(playerMon, playerTeam[slot], "Player");
+
+                        attemptSwitch(faster, fasterTeam[slot], firstName);
                     }
-                }
-            }
-            
-            if (playerAction == Action.ATTACK) {
-                attemptAttack(playerMon, playerChoice, rivalMon);
-                updateUI();
-                
-                if (rivalMon.currentHealth() == 0) {
-                    displayText(rivalMon.name() + " fainted!");
-                    delay(1);
-                    
-                    if (!stillStanding(rivalTeam))
-                        displayText("Rival is out of usable Pokemon!",
-                                "Player wins!");
                     
                     else {
+                        
                         Random rng = new Random();
                         int slot = rng.nextInt(6);
-                        
-                        while (rivalTeam[slot].currentHealth() == 0)
+
+                        while (fasterTeam[slot].isFainted())
                             slot = rng.nextInt(6);
-                        
-                        attemptSwitch(rivalMon, rivalTeam[slot], "Rival");
+
+                        attemptSwitch(faster, fasterTeam[slot], firstName);
                     }
                 }
             }
