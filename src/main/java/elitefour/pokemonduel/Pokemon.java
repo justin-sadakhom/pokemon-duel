@@ -669,8 +669,12 @@ public class Pokemon {
     }
     
     public int effectiveStat(Stat stat) {
-        return (int)(stat(stat) * 
-                REGULAR_STAT_STAGES.get(statStage(stat)));
+        return (int)(stat(stat) * REGULAR_STAT_STAGES.get(statStage(stat)));
+    }
+    
+    public boolean checkAccuracy(Move move) {
+        Random rng = new Random();
+        return rng.nextInt(100) < hiddenStat(Stat.ACCURACY) * move.accuracy();
     }
     
     private int statFormula(int baseStat, int IV, int EV, Modifier mod) {

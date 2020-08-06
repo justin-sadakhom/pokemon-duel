@@ -692,35 +692,45 @@ public class Battle implements ActionListener {
         displayText(attacker.name() + " used " + move.name() + "!");
         delay(0.5);
 
-        int damage = attacker.useMove(slot, defender);
-
-        // Display battle text for move effectiveness.
-        if (move instanceof DamageMove) {
-
-            double multiplier = 
-                    DamageMove.typeAdvantage(move.type(), defender.type());
-
-            if (multiplier != 1.0) {
-                displayText(DamageMove.text(move.type(), defender.type()));
-                delay(0.5);
-            }
-        }
-
-        // Display battle text for stat changes.
-        if (move instanceof DamageMoveStat) {
-            
-            boolean success = ((DamageMoveStat)move).
-                    useSecondary(defender, attacker);
-            displayText(DamageMoveStat.text(defender.name(),
-                    (DamageMoveStat)move, success));
+        // Move misses.
+        if (!attacker.checkAccuracy(move)) {
+            displayText(attacker.name() + "'s" + " attack missed!");
             delay(0.5);
         }
         
-        // Display battle text for drain heal.
-        else if (move instanceof DrainMove) {
-            ((DrainMove)move).useSecondary(attacker, defender, damage);
-            displayText(DrainMove.text(defender.name()));
-            delay(0.5);
+        // Move hits.
+        else {
+
+            int damage = attacker.useMove(slot, defender);
+        
+            // Display battle text for move effectiveness.
+            if (move instanceof DamageMove) {
+
+                double multiplier = 
+                        DamageMove.typeAdvantage(move.type(), defender.type());
+
+                if (multiplier != 1.0) {
+                    displayText(DamageMove.text(move.type(), defender.type()));
+                    delay(0.5);
+                }
+            }
+
+            // Display battle text for stat changes.
+            if (move instanceof DamageMoveStat) {
+
+                boolean success = ((DamageMoveStat)move).
+                        useSecondary(defender, attacker);
+                displayText(DamageMoveStat.text(defender.name(),
+                        (DamageMoveStat)move, success));
+                delay(0.5);
+            }
+
+            // Display battle text for drain heal.
+            else if (move instanceof DrainMove) {
+                ((DrainMove)move).useSecondary(attacker, defender, damage);
+                displayText(DrainMove.text(defender.name()));
+                delay(0.5);
+            }
         }
     }
     
