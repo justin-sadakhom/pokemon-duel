@@ -1,6 +1,6 @@
 package elitefour.pokemonduel;
 
-public class Buff extends Move {
+public class Buff extends StatusMove {
     
     private final Pokemon.Stat affectedStat;
     private final int stages;
@@ -18,7 +18,7 @@ public class Buff extends Move {
         
         deductPP(1);
         
-        if (target.raiseStatStage(affectedStat, stages))
+        if (user.raiseStatStage(affectedStat, stages))
             return 1;
         else
             return 0;
