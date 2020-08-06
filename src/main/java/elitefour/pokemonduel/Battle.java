@@ -717,12 +717,12 @@ public class Battle implements ActionListener {
             }
 
             // Display battle text for stat changes.
-            if (move instanceof DamageMoveStat) {
+            if (move instanceof DamageDebuff) {
 
-                boolean success = ((DamageMoveStat)move).
+                boolean success = ((DamageDebuff)move).
                         useSecondary(defender, attacker);
-                displayText(DamageMoveStat.text(defender.name(),
-                        (DamageMoveStat)move, success));
+                displayText(DamageDebuff.text(defender.name(),
+                        (DamageDebuff)move, success));
                 delay(0.5);
             }
 

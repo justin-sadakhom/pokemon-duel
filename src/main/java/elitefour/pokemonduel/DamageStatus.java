@@ -2,12 +2,12 @@ package elitefour.pokemonduel;
 
 import java.util.Random;
 
-public class DamageMoveStatus extends DamageMove {
+public class DamageStatus extends DamageMove {
     
     private final Status appliedStatus;
     private final int effectChance;
     
-    public DamageMoveStatus(String name, Type type, Category category,
+    public DamageStatus(String name, Type type, Category category,
             int pp, int power, int accuracy, Status status, int chance) {
         
         super(name, type, category, pp, power, accuracy);

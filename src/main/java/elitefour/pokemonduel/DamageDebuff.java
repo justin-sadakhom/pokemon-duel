@@ -2,12 +2,12 @@ package elitefour.pokemonduel;
 
 import java.util.Random;
 
-public class DamageMoveStat extends DamageMove {
+public class DamageDebuff extends DamageMove {
     
     private final Pokemon.Stat affectedStat;
     private final int effectChance, stages;
     
-    public DamageMoveStat(String name, Type type, Category category, int pp,
+    public DamageDebuff(String name, Type type, Category category, int pp,
             int power, int accuracy, Pokemon.Stat stat, int chance, int stage) {
         
         super(name, type, category, pp, power, accuracy);
@@ -48,7 +48,7 @@ public class DamageMoveStat extends DamageMove {
         return affectedStat.name();
     }
     
-    public static String text(String name, DamageMoveStat move, boolean success) {
+    public static String text(String name, DamageDebuff move, boolean success) {
         
         String message = name + "'s " + move.affectedStat().toLowerCase();
         
