@@ -25,7 +25,7 @@ public class DamageMoveStatus extends DamageMove {
         Random rng = new Random();
         boolean success = true;
         
-        if (rng.nextInt(effectChance) < 100)
+        if (rng.nextInt(100) < effectChance)
             success = applyEffect(target);
         
         return success;

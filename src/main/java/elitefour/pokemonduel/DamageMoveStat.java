@@ -26,7 +26,7 @@ public class DamageMoveStat extends DamageMove {
         Random rng = new Random();
         boolean result = false;
         
-        if (rng.nextInt(effectChance) < 100)
+        if (rng.nextInt(100) < effectChance)
             result = applyEffect(target);
         
         return result;
