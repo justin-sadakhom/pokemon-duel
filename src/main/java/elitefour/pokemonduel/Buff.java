@@ -24,7 +24,15 @@ public class Buff extends StatusMove {
             return 0;
     }
     
-    public static String text(String name, DamageDebuff move, boolean success) {
+    public int stages() {
+        return stages;
+    }
+    
+    public String affectedStat() {
+        return affectedStat.name();
+    }
+    
+    public static String hitText(String name, Buff move, boolean success) {
         
         String message = name + "'s " + move.affectedStat().toLowerCase();
         

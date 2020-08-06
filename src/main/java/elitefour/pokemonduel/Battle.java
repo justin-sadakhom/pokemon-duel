@@ -277,6 +277,8 @@ public class Battle implements ActionListener {
     
     private void displayText(String output1, String output2) {
         
+        delay(0.5);
+        
         battleText1.setText("<html><font size=6>" + output1 + "</font></html>");
         battleText2.setText("<html><font size=6>" + output2 + "</font></html>");
         
@@ -691,7 +693,6 @@ public class Battle implements ActionListener {
         
         Move move = user.moves()[slot];
         displayText(Move.attemptText(user.name(), move.name()));
-        delay(0.5);
         
         // Damaging move.
         if (move instanceof DamageMove) {
@@ -705,7 +706,6 @@ public class Battle implements ActionListener {
             // Move misses.
             if (rng.nextInt(100) < move.hitChance(user, target)) {
                 displayText(Move.missText(user.name()));
-                delay(0.5);
             }
             
             // Move lands.
@@ -717,16 +717,12 @@ public class Battle implements ActionListener {
                     double multiplier = 
                         DamageMove.typeAdvantage(move.type(), target.type());
 
-                    if (multiplier != 1.0) {
+                    if (multiplier != 1.0)
                         displayText(DamageMove.hitText(move.type(),
                                 target.type()));
-                        delay(0.5);
-                    }
 
-                    if (((DamageMove)move).isCrit()) {
+                    if (((DamageMove)move).isCrit())
                         displayText(DamageMove.critText());
-                        delay(0.5);
-                    }
 
                     if (move instanceof DamageDebuff) {
 
@@ -734,19 +730,15 @@ public class Battle implements ActionListener {
                                 useSecondary(target, user);
                         displayText(DamageDebuff.hitText(target.name(),
                                 (DamageDebuff)move, success));
-                        delay(0.5);
                     }
 
                     else if (move instanceof DrainMove) {
                         ((DrainMove)move).useSecondary(user, target, damage);
                         displayText(DrainMove.hitText(target.name()));
-                        delay(0.5);
                     }
                     
-                    else if (move instanceof MultiHitMove) {
+                    else if (move instanceof MultiHitMove)
                         displayText(MultiHitMove.hitText(hits));
-                        delay(0.5);
-                    }
                 }
             }
         }
@@ -754,7 +746,21 @@ public class Battle implements ActionListener {
         // Non-damaging move.
         else {
             
+            Random rng = new Random();
+            int result = user.useMove(slot, target);
+
+            // Move misses.
+            if (rng.nextInt(100) < move.hitChance(user, target))
+                displayText(Move.missText(user.name()));
             
+            // Move hits.
+            else {
+                
+                if (move instanceof Buff) {
+                    boolean success = result == 1;
+                    displayText(Buff.hitText(user.name(), (Buff)move, success));
+                }
+            }
         }
     }
     
