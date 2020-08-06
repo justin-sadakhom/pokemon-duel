@@ -687,56 +687,74 @@ public class Battle implements ActionListener {
         }
     }
     
-    private void processAttack(Pokemon attacker, int slot, Pokemon defender) {
+    private void processAttack(Pokemon user, int slot, Pokemon target) {
         
-        Move move = attacker.moves()[slot];
-        displayText(attacker.name() + " used " + move.name() + "!");
+        Move move = user.moves()[slot];
+        displayText(Move.attemptText(user.name(), move.name()));
         delay(0.5);
         
-        Random rng = new Random();
-
-        // Move misses. Note: accuracy of 0 indicates moves will always hit.
-        if (move.accuracy() != 0 &&
-                rng.nextInt(100) < attacker.hiddenStat(Pokemon.Stat.ACCURACY) *
-                move.accuracy() * defender.hiddenStat(Pokemon.Stat.EVASION)) {
+        // Damaging move.
+        if (move instanceof DamageMove) {
+            int hits = 1;
             
-            displayText(attacker.name() + "'s" + " attack missed!");
-            delay(0.5);
-        }
-        
-        // Move hits.
-        else {
+            if (move instanceof MultiHitMove)
+                hits = ((MultiHitMove)move).hits();
+            
+            Random rng = new Random();
 
-            int damage = attacker.useMove(slot, defender);
-        
-            // Display battle text for move effectiveness.
-            if (move instanceof DamageMove) {
+            // Move misses.
+            if (rng.nextInt(100) < move.hitChance(user, target)) {
+                displayText(Move.missText(user.name()));
+                delay(0.5);
+            }
+            
+            // Move lands.
+            else {
+                
+                for (int i = 0; i < hits; i++) {
+                    int damage = user.useMove(slot, target);
 
-                double multiplier = 
-                        DamageMove.typeAdvantage(move.type(), defender.type());
+                    double multiplier = 
+                        DamageMove.typeAdvantage(move.type(), target.type());
 
-                if (multiplier != 1.0) {
-                    displayText(DamageMove.text(move.type(), defender.type()));
-                    delay(0.5);
+                    if (multiplier != 1.0) {
+                        displayText(DamageMove.hitText(move.type(),
+                                target.type()));
+                        delay(0.5);
+                    }
+
+                    if (((DamageMove)move).isCrit()) {
+                        displayText(DamageMove.critText());
+                        delay(0.5);
+                    }
+
+                    if (move instanceof DamageDebuff) {
+
+                        boolean success = ((DamageDebuff)move).
+                                useSecondary(target, user);
+                        displayText(DamageDebuff.hitText(target.name(),
+                                (DamageDebuff)move, success));
+                        delay(0.5);
+                    }
+
+                    else if (move instanceof DrainMove) {
+                        ((DrainMove)move).useSecondary(user, target, damage);
+                        displayText(DrainMove.hitText(target.name()));
+                        delay(0.5);
+                    }
+                    
+                    else if (move instanceof MultiHitMove) {
+                        displayText(MultiHitMove.hitText(hits));
+                        delay(0.5);
+                    }
                 }
             }
-
-            // Display battle text for stat changes.
-            if (move instanceof DamageDebuff) {
-
-                boolean success = ((DamageDebuff)move).
-                        useSecondary(defender, attacker);
-                displayText(DamageDebuff.text(defender.name(),
-                        (DamageDebuff)move, success));
-                delay(0.5);
-            }
-
-            // Display battle text for drain heal.
-            else if (move instanceof DrainMove) {
-                ((DrainMove)move).useSecondary(attacker, defender, damage);
-                displayText(DrainMove.text(defender.name()));
-                delay(0.5);
-            }
+        }
+        
+        // Non-damaging move.
+        else {
+            
+            
         }
     }
     
