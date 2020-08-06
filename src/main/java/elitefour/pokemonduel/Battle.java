@@ -140,7 +140,7 @@ public class Battle implements ActionListener {
             playerTeamDisplay[i].setIcon(POKEBALL);
             playerTeamDisplay[i].setHorizontalAlignment(alignment);
             rivalTeamDisplay[i].setIcon(POKEBALL);
-            rivalTeamDisplay[0].setHorizontalAlignment(alignment);
+            rivalTeamDisplay[i].setHorizontalAlignment(alignment);
         }
         
         playerTeamDisplay[0].setBounds(10, 19, 43, 43);
@@ -156,7 +156,7 @@ public class Battle implements ActionListener {
         rivalTeamDisplay[3].setBounds(592, 166, 43, 43);
         rivalTeamDisplay[4].setBounds(592, 215, 43, 43);
         rivalTeamDisplay[5].setBounds(592, 264, 43, 43);
-        
+
         for (int i = 0; i < 4; i++) {
             moves[i].setFocusPainted(false);
             moves[i].addActionListener(this);
