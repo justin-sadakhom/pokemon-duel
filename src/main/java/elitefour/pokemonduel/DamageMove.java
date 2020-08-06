@@ -5,10 +5,13 @@ import java.util.Random;
 
 public class DamageMove extends Move {
     
+    private boolean isCrit;
+    
     public DamageMove(String name, Type type, Category category,
             int pp, int power, int accuracy) {
         
         super(name, type, category, pp, power, accuracy);
+        isCrit = false;
     }
     
     @Override
@@ -17,9 +20,10 @@ public class DamageMove extends Move {
         return target.deductHealth(damage(user, target));
     }
     
-    private int damage(Pokemon user, Pokemon target) {
+    protected int damage(Pokemon user, Pokemon target) {
         
         int a, d;
+        isCrit = false; // Reset crit every time.
         
         if (category().equals(Category.PHYSICAL)) {
             a = user.effectiveStat(Pokemon.Stat.ATTACK);
@@ -49,8 +53,10 @@ public class DamageMove extends Move {
         Random rng = new Random();
         double num = rng.nextDouble();
         
-        if (num <= critChance)
+        if (num <= critChance) {
+            isCrit = true;
             return 1.5;
+        }
         else
             return 1.0;
     }
@@ -111,7 +117,7 @@ public class DamageMove extends Move {
                 random());
     }
     
-    public static String text(Type moveType, Type[] defenderType) {
+    public static String hitText(Type moveType, Type[] defenderType) {
         
         double multiplier = typeAdvantage(moveType, defenderType);
 
@@ -121,5 +127,13 @@ public class DamageMove extends Move {
             return "It's not very effective...";
         else // multiplier == 0
             return "It had no effect...";
+    }
+    
+    public boolean isCrit() {
+        return isCrit;
+    }
+    
+    public static String critText() {
+        return "A critical hit!";
     }
 }
