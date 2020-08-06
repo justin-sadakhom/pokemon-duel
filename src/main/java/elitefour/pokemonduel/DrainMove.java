@@ -17,7 +17,7 @@ public class DrainMove extends DamageMove {
         user.restoreHealth(damage / 2);
     }
     
-    public static String text(String name) {
+    public static String hitText(String name) {
         return name + " had its energy drained!";
     }
 }

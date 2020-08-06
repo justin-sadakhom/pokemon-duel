@@ -73,5 +73,22 @@ public abstract class Move {
         return accuracy;
     }
     
+    public double hitChance(Pokemon user, Pokemon target) {
+        
+        if (accuracy == 0)
+            return 100;
+        else
+            return user.hiddenStat(Pokemon.Stat.ACCURACY) * accuracy * 
+                    target.hiddenStat(Pokemon.Stat.EVASION);
+    }
+    
+    public static String attemptText(String user, String moveName) {
+        return user + " used " + moveName + "!";
+    }
+    
+    public static String missText(String user) {
+        return user + "'s attack missed!";
+    }
+    
     public abstract int use(Pokemon user, Pokemon target);
 }
