@@ -692,9 +692,14 @@ public class Battle implements ActionListener {
         Move move = attacker.moves()[slot];
         displayText(attacker.name() + " used " + move.name() + "!");
         delay(0.5);
+        
+        Random rng = new Random();
 
-        // Move misses.
-        if (!attacker.checkAccuracy(move)) {
+        // Move misses. Note: accuracy of 0 indicates moves will always hit.
+        if (move.accuracy() != 0 &&
+                rng.nextInt(100) < attacker.hiddenStat(Pokemon.Stat.ACCURACY) *
+                move.accuracy() * defender.hiddenStat(Pokemon.Stat.EVASION)) {
+            
             displayText(attacker.name() + "'s" + " attack missed!");
             delay(0.5);
         }
