@@ -96,7 +96,7 @@ public class Pokemon {
     private final Type[] type;
     private final Move[] moves;
     private final Nature nature;
-    private Status status;
+    private final Status status;
     private int level, sleepCounter, confusionCounter;
     
     /* Statistics fields */
@@ -209,11 +209,19 @@ public class Pokemon {
 
             if (line.equals(name)) {
                 line = reader.readLine();
-                typing = line.split("/");
+                
+                if (line.contains("/"))
+                    typing = line.split("/");
+                else
+                    typing[0] = line;
             }
 
             tempType[0] = Type.valueOf(typing[0]);
-            tempType[1] = Type.valueOf(typing[1]);
+            
+            if (typing[1].isEmpty())
+                tempType[1] = Type.NONE;
+            else
+                tempType[1] = Type.valueOf(typing[1]);
             
         } catch (IOException error) {
             error.printStackTrace(System.out);
