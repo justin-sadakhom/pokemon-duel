@@ -4,10 +4,8 @@ import java.util.Random;
 
 public class MultiHitMove extends DamageMove {
     
-    public MultiHitMove(String name, Type type, Category category,
-            int pp, int power, int accuracy) {
-        
-        super(name, type, category, pp, power, accuracy);
+    public MultiHitMove(String name) {
+        super(name);
     }
     
     @Override

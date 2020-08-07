@@ -5,7 +5,7 @@ public class DrainMove extends DamageMove {
     public DrainMove(String name, Type type, Category category,
             int pp, int power, int accuracy) {
         
-        super(name, type, category, pp, power, accuracy);
+        super(name);
     }
     
     @Override

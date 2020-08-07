@@ -1,5 +1,9 @@
 package elitefour.pokemonduel;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Random;
 
 public class DamageStatus extends DamageMove {
@@ -7,12 +11,53 @@ public class DamageStatus extends DamageMove {
     private final Status appliedStatus;
     private final int effectChance;
     
-    public DamageStatus(String name, Type type, Category category,
-            int pp, int power, int accuracy, Status status, int chance) {
+    public DamageStatus(String name) {
         
-        super(name, type, category, pp, power, accuracy);
-        appliedStatus = status;
-        effectChance = chance;
+        super(name);
+        
+        Status tempStatus = new Status();
+        int tempChance = -1;
+        
+        try {
+            File file = new File("resources\\data\\moves.txt");
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+
+            String line = "";
+
+            while (line != null && !line.equals(name))
+                line = reader.readLine();
+
+            if (line.equals(name)) {
+                
+                for (int i = 0; i < 2; i++) {
+                    line = reader.readLine();
+                    
+                    switch (i) {
+                        case 0:
+                            String status = line.toUpperCase();
+                            
+                            if (Status.containsLone(status))
+                                tempStatus.setLoneStatus(
+                                        Status.LoneStatus.valueOf(status)
+                                );
+                            else
+                                tempStatus.addMixStatus(
+                                        Status.MixStatus.valueOf(status)
+                                );
+                            
+                            break;
+                        case 1:
+                            tempChance = Integer.parseInt(line);
+                            break;
+                    }
+                }
+            }
+        } catch (IOException error) {
+            error.printStackTrace(System.out);
+        }
+        
+        appliedStatus = tempStatus;
+        effectChance = tempChance;
     }
     
     @Override

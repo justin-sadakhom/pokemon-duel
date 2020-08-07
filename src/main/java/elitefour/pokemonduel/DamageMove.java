@@ -7,10 +7,8 @@ public class DamageMove extends Move {
     
     private boolean isCrit;
     
-    public DamageMove(String name, Type type, Category category,
-            int pp, int power, int accuracy) {
-        
-        super(name, type, category, pp, power, accuracy);
+    public DamageMove(String name) {
+        super(name);
         isCrit = false;
     }
     

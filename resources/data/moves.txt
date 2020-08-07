@@ -1,0 +1,32 @@
+Mega Drain
+Grass
+Special
+15
+40
+100
+Growth
+Normal
+Special
+20
+-
+-
+Attack/Special_Attack
+1
+Vine Whip
+Grass
+Physical
+25
+35
+100
+Tackle
+Normal
+Physical
+35
+40
+100
+Flamethrower
+15
+90
+100
+Burn
+10

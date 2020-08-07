@@ -65,4 +65,22 @@ public class Status {
     public boolean isEmpty() {
         return loneStatus == Status.LoneStatus.NONE && mixStatus.isEmpty();
     }
+    
+    public static boolean containsLone(String test) {
+
+        for (Status.LoneStatus choice : Status.LoneStatus.values())
+            if (choice.name().equals(test))
+                return true;
+
+        return false;
+    }
+    
+    public static boolean containsMix(String test) {
+
+        for (Status.MixStatus choice : Status.MixStatus.values())
+            if (choice.name().equals(test))
+                return true;
+
+        return false;
+    }
 }
