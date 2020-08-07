@@ -4,8 +4,12 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.FontFormatException;
+import java.awt.Graphics;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Random;
@@ -14,9 +18,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.UIManager;
 import javax.swing.border.Border;
 
-public class Battle implements ActionListener {
+public class Battle implements ActionListener, MouseListener {
     
     public enum Action {
         ATTACK,
@@ -78,6 +83,7 @@ public class Battle implements ActionListener {
         window = new JFrame("Pokémon Duel");
         window.setLayout(null);
         window.setSize(660, 560);
+        window.setLocationRelativeTo(null);
         window.setResizable(false);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
@@ -158,8 +164,10 @@ public class Battle implements ActionListener {
         rivalTeamDisplay[5].setBounds(592, 264, 43, 43);
 
         for (int i = 0; i < 4; i++) {
+            moves[i].setBorder(new RoundedBorder(10));
             moves[i].setFocusPainted(false);
             moves[i].addActionListener(this);
+            moves[i].addMouseListener(this);
         }
         
         moves[0].setBounds(10, 400, 152, 40);
@@ -168,8 +176,10 @@ public class Battle implements ActionListener {
         moves[3].setBounds(484, 400, 152, 40);
         
         for (int i = 0; i < 6; i++) {
+            switches[i].setBorder(new RoundedBorder(10));
             switches[i].setFocusPainted(false);
             switches[i].addActionListener(this);
+            switches[i].addMouseListener(this);
         }
         
         switches[0].setBounds(10, 475, 100, 33);
@@ -202,6 +212,89 @@ public class Battle implements ActionListener {
         window.add(battlefield);
         
         window.setVisible(true);
+    }
+    
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        
+    }
+    
+    @Override
+    public void mousePressed(MouseEvent e) {
+        
+    }
+    
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        
+    }
+    
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        
+        if (e.getSource() == moves[0])
+            moves[0].setBorder(UIManager.getBorder("Button.border"));
+        
+        else if (e.getSource() == moves[1])
+            moves[1].setBorder(UIManager.getBorder("Button.border"));
+        
+        else if (e.getSource() == moves[2])
+            moves[2].setBorder(UIManager.getBorder("Button.border"));
+        
+        else if (e.getSource() == moves[3])
+            moves[3].setBorder(UIManager.getBorder("Button.border"));
+        
+        else if (e.getSource() == switches[0])
+            switches[0].setBorder(UIManager.getBorder("Button.border"));
+        
+        else if (e.getSource() == switches[1])
+            switches[1].setBorder(UIManager.getBorder("Button.border"));
+        
+        else if (e.getSource() == switches[2])
+            switches[2].setBorder(UIManager.getBorder("Button.border"));
+        
+        else if (e.getSource() == switches[3])
+            switches[3].setBorder(UIManager.getBorder("Button.border"));
+        
+        else if (e.getSource() == switches[4])
+            switches[4].setBorder(UIManager.getBorder("Button.border"));
+        
+        else if (e.getSource() == switches[5])
+            switches[5].setBorder(UIManager.getBorder("Button.border"));
+    }
+    
+    @Override
+    public void mouseExited(MouseEvent e) {
+        
+        if (e.getSource() == moves[0])
+            moves[0].setBorder(new RoundedBorder(10));
+        
+        else if (e.getSource() == moves[1])
+            moves[1].setBorder(new RoundedBorder(10));
+        
+        else if (e.getSource() == moves[2])
+            moves[2].setBorder(new RoundedBorder(10));
+        
+        else if (e.getSource() == moves[3])
+            moves[3].setBorder(new RoundedBorder(10));
+        
+        else if (e.getSource() == switches[0])
+            switches[0].setBorder(new RoundedBorder(10));
+        
+        else if (e.getSource() == switches[1])
+            switches[1].setBorder(new RoundedBorder(10));
+        
+        else if (e.getSource() == switches[2])
+            switches[2].setBorder(new RoundedBorder(10));
+        
+        else if (e.getSource() == switches[3])
+            switches[3].setBorder(new RoundedBorder(10));
+        
+        else if (e.getSource() == switches[4])
+            switches[4].setBorder(new RoundedBorder(10));
+        
+        else if (e.getSource() == switches[5])
+            switches[5].setBorder(new RoundedBorder(10));
     }
     
     @Override
@@ -770,5 +863,31 @@ public class Battle implements ActionListener {
     
     public static void main(String[] args) {
         startBattle();
+    }
+}
+
+class RoundedBorder implements Border {
+
+    private final int radius;
+
+    RoundedBorder(int radius) {
+        this.radius = radius;
+    }
+
+    @Override
+    public Insets getBorderInsets(Component c) {
+        return new Insets(this.radius + 1, this.radius + 1,
+                this.radius + 2, this.radius);
+    }
+
+    @Override
+    public boolean isBorderOpaque() {
+        return true;
+    }
+
+    @Override
+    public void paintBorder(Component c, Graphics g, int x, int y,
+            int width, int height) {
+        g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
     }
 }
