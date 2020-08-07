@@ -3,6 +3,7 @@ package elitefour.pokemonduel;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -110,30 +111,13 @@ public class Pokemon {
     public Pokemon(String species) {
         
         this.name = species;
-        
-        Type[] tempType = new Type[2];
-        
-        try {
-            tempType = initType();
-        } catch (Exception error) {
-            error.printStackTrace(System.out);
-        }
-        
-        this.type = tempType;
+        this.type = initType();
         this.moves = new Move[4];
         this.nature = Nature.HARDY;
         this.status = new Status();
         this.level = 100;
         
-        Map<Stat, Integer> tempBaseStats = Collections.EMPTY_MAP;
-        
-        try {
-            tempBaseStats = initBaseStats();
-        } catch (Exception error) {
-            error.printStackTrace(System.out);
-        }
-        
-        this.baseStats = tempBaseStats;
+        this.baseStats = initBaseStats();
         this.evs = Map.of(Stat.HEALTH, 85, Stat.ATTACK, 85,
                 Stat.DEFENSE, 85, Stat.SPECIAL_ATTACK, 85,
                 Stat.SPECIAL_DEFENSE, 85, Stat.SPEED, 85);
@@ -154,30 +138,13 @@ public class Pokemon {
             int[] ivs, int[] evs, Move[] moves) {
         
         this.name = species;
-        
-        Type[] tempType = new Type[2];
-        
-        try {
-            tempType = initType();
-        } catch (Exception error) {
-            error.printStackTrace(System.out);
-        }
-        
-        this.type = tempType;
+        this.type = initType();
         this.moves = moves;
         this.nature = nature;
         this.status = new Status();
         this.level = level;
         
-        Map<Stat, Integer> tempBaseStats = Collections.EMPTY_MAP;
-        
-        try {
-            tempBaseStats = initBaseStats();
-        } catch (Exception error) {
-            error.printStackTrace(System.out);
-        }
-        
-        this.baseStats = tempBaseStats;
+        this.baseStats = initBaseStats();
         this.evs = Map.of(Stat.HEALTH, evs[0], Stat.ATTACK, evs[1],
                 Stat.DEFENSE, evs[2], Stat.SPECIAL_ATTACK, evs[3],
                 Stat.SPECIAL_DEFENSE, evs[4], Stat.SPEED, evs[5]);
@@ -192,53 +159,72 @@ public class Pokemon {
         currentHealth = stats.get(Stat.HEALTH);
     }
     
-    private Type[] initType() throws Exception {
+    private Type[] initType() {
         
-        File file = new File("resources\\data\\pokemon_species.txt");
-        BufferedReader reader = new BufferedReader(new FileReader(file));
+        Type[] tempType = new Type[2];
         
-        String line = "";
-        String[] typing = new String[2];
-        
-        while (line != null && !line.equals(name))
-            line = reader.readLine();
-        
-        if (line.equals(name)) {
-            line = reader.readLine();
-            typing = line.split("/");
-        }
+        try {
+            File file = new File("resources\\data\\pokemon_species.txt");
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+
+            String line = "";
+            String[] typing = new String[2];
+
+            while (line != null && !line.equals(name))
+                line = reader.readLine();
+
+            if (line.equals(name)) {
+                line = reader.readLine();
+                typing = line.split("/");
+            }
+
+            tempType[0] = Type.valueOf(typing[0]);
+            tempType[1] = Type.valueOf(typing[1]);
             
-        return new Type[]{Type.valueOf(typing[0]), Type.valueOf(typing[1])};
+        } catch (IOException error) {
+            error.printStackTrace(System.out);
+        }
+        
+        return tempType;
     }
     
-    private Map<Stat, Integer> initBaseStats() throws Exception {
+    private Map<Stat, Integer> initBaseStats() {
         
-        File file = new File("resources\\data\\pokemon_species.txt");
-        BufferedReader reader = new BufferedReader(new FileReader(file));
+        Map<Stat, Integer> tempBaseStats = Collections.EMPTY_MAP;
         
-        String line = "";
-        int[] species_stats = new int[6];
-        
-        while (line != null && !line.equals(name))
-            line = reader.readLine();
-        
-        if (line.equals(name)) {
-            
-            for (int i = 0; i < 2; i++)
+        try {
+            File file = new File("resources\\data\\pokemon_species.txt");
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+
+            String line = "";
+            int[] species_stats = new int[6];
+
+            while (line != null && !line.equals(name))
                 line = reader.readLine();
+
+            if (line.equals(name)) {
+
+                for (int i = 0; i < 2; i++)
+                    line = reader.readLine();
+
+                String[] temp = line.split("/");
+
+                for (int i = 0; i < 6; i++)
+                    species_stats[i] = Integer.parseInt(temp[i]);
+            }
             
-            String[] temp = line.split("/");
-            
-            for (int i = 0; i < 6; i++)
-                species_stats[i] = Integer.parseInt(temp[i]);
+            tempBaseStats.put(Stat.HEALTH, species_stats[0]);
+            tempBaseStats.put(Stat.ATTACK, species_stats[1]);
+            tempBaseStats.put(Stat.DEFENSE, species_stats[2]);
+            tempBaseStats.put(Stat.SPECIAL_ATTACK, species_stats[3]);
+            tempBaseStats.put(Stat.SPECIAL_DEFENSE, species_stats[4]);
+            tempBaseStats.put(Stat.SPEED, species_stats[5]);
+
+        } catch (IOException | NumberFormatException error) {
+            error.printStackTrace(System.out);
         }
         
-        return Map.of(Stat.HEALTH, species_stats[0],
-                Stat.ATTACK, species_stats[1],
-                Stat.DEFENSE, species_stats[2],
-                Stat.SPECIAL_ATTACK, species_stats[3],
-                Stat.SPECIAL_DEFENSE, species_stats[4],
-                Stat.SPEED, species_stats[5]);
+        return tempBaseStats;
     }
     
     public String name() {
