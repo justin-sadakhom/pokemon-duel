@@ -8,8 +8,6 @@ import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Random;
@@ -18,10 +16,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.UIManager;
 import javax.swing.border.Border;
 
-public class Battle implements ActionListener, MouseListener {
+public class Battle implements ActionListener {
     
     public enum Action {
         ATTACK,
@@ -167,7 +164,6 @@ public class Battle implements ActionListener, MouseListener {
             moves[i].setBorder(new RoundedBorder(10));
             moves[i].setFocusPainted(false);
             moves[i].addActionListener(this);
-            moves[i].addMouseListener(this);
         }
         
         moves[0].setBounds(10, 400, 152, 40);
@@ -179,7 +175,6 @@ public class Battle implements ActionListener, MouseListener {
             switches[i].setBorder(new RoundedBorder(10));
             switches[i].setFocusPainted(false);
             switches[i].addActionListener(this);
-            switches[i].addMouseListener(this);
         }
         
         switches[0].setBounds(10, 475, 100, 33);
@@ -190,7 +185,7 @@ public class Battle implements ActionListener, MouseListener {
         switches[5].setBounds(535, 475, 100, 33);
         
         for (int i = 0; i < playerTeam.length; i++) {
-            String directory = "resources\\sprites\\icon" +
+            String directory = "resources\\sprites\\icon\\" +
                     playerTeam[i].name().toLowerCase() + ".png";
             switches[i].setIcon(new ImageIcon(directory));
         }
@@ -218,89 +213,8 @@ public class Battle implements ActionListener, MouseListener {
         window.add(battlefield);
         
         window.setVisible(true);
-    }
-    
-    @Override
-    public void mouseClicked(MouseEvent e) {
         
-    }
-    
-    @Override
-    public void mousePressed(MouseEvent e) {
-        
-    }
-    
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        
-    }
-    
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        
-        if (e.getSource() == moves[0])
-            moves[0].setBorder(UIManager.getBorder("Button.border"));
-        
-        else if (e.getSource() == moves[1])
-            moves[1].setBorder(UIManager.getBorder("Button.border"));
-        
-        else if (e.getSource() == moves[2])
-            moves[2].setBorder(UIManager.getBorder("Button.border"));
-        
-        else if (e.getSource() == moves[3])
-            moves[3].setBorder(UIManager.getBorder("Button.border"));
-        
-        else if (e.getSource() == switches[0])
-            switches[0].setBorder(UIManager.getBorder("Button.border"));
-        
-        else if (e.getSource() == switches[1])
-            switches[1].setBorder(UIManager.getBorder("Button.border"));
-        
-        else if (e.getSource() == switches[2])
-            switches[2].setBorder(UIManager.getBorder("Button.border"));
-        
-        else if (e.getSource() == switches[3])
-            switches[3].setBorder(UIManager.getBorder("Button.border"));
-        
-        else if (e.getSource() == switches[4])
-            switches[4].setBorder(UIManager.getBorder("Button.border"));
-        
-        else if (e.getSource() == switches[5])
-            switches[5].setBorder(UIManager.getBorder("Button.border"));
-    }
-    
-    @Override
-    public void mouseExited(MouseEvent e) {
-        
-        if (e.getSource() == moves[0])
-            moves[0].setBorder(new RoundedBorder(10));
-        
-        else if (e.getSource() == moves[1])
-            moves[1].setBorder(new RoundedBorder(10));
-        
-        else if (e.getSource() == moves[2])
-            moves[2].setBorder(new RoundedBorder(10));
-        
-        else if (e.getSource() == moves[3])
-            moves[3].setBorder(new RoundedBorder(10));
-        
-        else if (e.getSource() == switches[0])
-            switches[0].setBorder(new RoundedBorder(10));
-        
-        else if (e.getSource() == switches[1])
-            switches[1].setBorder(new RoundedBorder(10));
-        
-        else if (e.getSource() == switches[2])
-            switches[2].setBorder(new RoundedBorder(10));
-        
-        else if (e.getSource() == switches[3])
-            switches[3].setBorder(new RoundedBorder(10));
-        
-        else if (e.getSource() == switches[4])
-            switches[4].setBorder(new RoundedBorder(10));
-        
-        else if (e.getSource() == switches[5])
-            switches[5].setBorder(new RoundedBorder(10));
+        loopBattle();
     }
     
     @Override
@@ -404,21 +318,21 @@ public class Battle implements ActionListener, MouseListener {
         playerInfo.update(playerMon);
         rivalInfo.update(rivalMon);
         
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < playerMon.moves().length; i++) {
             moves[i].setText(playerMon.moves()[i].name());
             moves[i].setToolTipText(playerMon.moves()[i].PP() + " remaining");
         }
         
-        for (int i = 0; i < 6; i++)
-            switches[i].setIcon(new ImageIcon("C:\\Pokemon\\sprites\\icon\\" + 
+        for (int i = 0; i < playerTeam.length; i++)
+            switches[i].setIcon(new ImageIcon("resources\\sprites\\icon\\" + 
                     playerTeam[i].name().toLowerCase() + ".png"));
         
-        playerPokemon.setIcon(new ImageIcon("C:\\Pokemon\\sprites\\back\\" + 
+        playerPokemon.setIcon(new ImageIcon("resources\\sprites\\back\\" + 
                 playerMon.name().toLowerCase() + ".png"));
-        rivalPokemon.setIcon(new ImageIcon("C:\\Pokemon\\sprites\\front\\" + 
+        rivalPokemon.setIcon(new ImageIcon("resources\\sprites\\front\\" + 
                 rivalMon.name().toLowerCase() + ".png"));
         
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < playerTeam.length; i++) {
             if (playerTeam[i].currentHealth() == 0)
                 playerPokemon.setIcon(GRAY_BALL);
             if (rivalTeam[i].currentHealth() == 0)
@@ -437,14 +351,14 @@ public class Battle implements ActionListener, MouseListener {
         int slot = buttonChoice;
         Random rng = new Random();
         
-        setPlayerPokemon(playerTeam[slot]);
-        setRivalPokemon(rivalTeam[rng.nextInt(6)]);
+        setPlayerPokemon(playerTeam[slot - 4]);
+        setRivalPokemon(rivalTeam[rng.nextInt(rivalTeam.length)]);
         
         playerInfo.setVisible(true);
         rivalInfo.setVisible(true);
     }
     
-    public void loopBattle() {
+    private void loopBattle() {
         
         chooseLead();
         revealUI();
@@ -844,7 +758,20 @@ public class Battle implements ActionListener, MouseListener {
     }
     
     private static void startBattle() {
-        Battle game = new Battle(new Pokemon[6], new Pokemon[6]);
+        
+        // DEMO
+        Pokemon[] teamOne = new Pokemon[1];
+        teamOne[0] = new Pokemon("Venusaur");
+        teamOne[0].setMove(new DamageMove("Mega Drain"), 1);
+        teamOne[0].setMove(new Buff("Growth"), 2);
+        teamOne[0].setMove(new DamageMove("Vine Whip"), 3);
+        teamOne[0].setMove(new DamageMove("Tackle"), 4);
+        
+        Pokemon[] teamTwo = new Pokemon[1];
+        teamTwo[0] = new Pokemon("Charizard");
+        teamTwo[0].setMove(new DamageMove("Flamethrower"), 1);
+        
+        Battle game = new Battle(teamOne, teamTwo);
     }
     
     public static void main(String[] args) {

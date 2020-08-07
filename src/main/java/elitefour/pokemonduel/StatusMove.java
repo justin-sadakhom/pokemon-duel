@@ -2,9 +2,7 @@ package elitefour.pokemonduel;
 
 public class StatusMove extends Move {
     
-    public StatusMove(String name, Type type, Category category,
-            int pp, int power, int accuracy) {
-        
+    public StatusMove(String name) {
         super(name);
     }
     

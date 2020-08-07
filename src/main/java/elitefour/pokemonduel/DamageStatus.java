@@ -29,6 +29,9 @@ public class DamageStatus extends DamageMove {
 
             if (line.equals(name)) {
                 
+                for (int j = 0; j < 5; j++)
+                    reader.readLine();
+                
                 for (int i = 0; i < 2; i++) {
                     line = reader.readLine();
                     

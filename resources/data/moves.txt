@@ -10,7 +10,7 @@ Special
 20
 -
 -
-Attack/Special_Attack
+Special_Attack
 1
 Vine Whip
 Grass
@@ -25,6 +25,8 @@ Physical
 40
 100
 Flamethrower
+Fire
+Special
 15
 90
 100

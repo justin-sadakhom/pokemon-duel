@@ -54,10 +54,16 @@ public abstract class Move {
                             pp = Integer.parseInt(line);
                             break;
                         case 3:
-                            tempPower = Integer.parseInt(line);
+                            if (line.equals("-"))
+                                tempPower = 0;
+                            else
+                                tempPower = Integer.parseInt(line);
                             break;
                         case 4:
-                            tempAccuracy = Integer.parseInt(line);
+                            if (line.equals("-"))
+                                tempAccuracy = 0;
+                            else
+                                tempAccuracy = Integer.parseInt(line);
                             break;
                     }
                 }

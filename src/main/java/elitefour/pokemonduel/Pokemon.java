@@ -6,7 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import static java.util.Map.entry;
@@ -216,12 +216,12 @@ public class Pokemon {
                     typing[0] = line;
             }
 
-            tempType[0] = Type.valueOf(typing[0]);
+            tempType[0] = Type.valueOf(typing[0].toUpperCase());
             
             if (typing[1].isEmpty())
                 tempType[1] = Type.NONE;
             else
-                tempType[1] = Type.valueOf(typing[1]);
+                tempType[1] = Type.valueOf(typing[1].toUpperCase());
             
         } catch (IOException error) {
             error.printStackTrace(System.out);
@@ -232,7 +232,7 @@ public class Pokemon {
     
     private Map<Stat, Integer> initBaseStats() {
         
-        Map<Stat, Integer> tempBaseStats = Collections.EMPTY_MAP;
+        Map<Stat, Integer> tempBaseStats = new HashMap<>();
         
         try {
             File file = new File("resources\\data\\pokemon_species.txt");
@@ -427,12 +427,15 @@ public class Pokemon {
     
     private void calcStats() {
         
+        stats = new HashMap<>();
         stats.put(Stat.HEALTH, calcHealth());
         stats.put(Stat.ATTACK, calcAttack());
         stats.put(Stat.DEFENSE, calcDefense());
         stats.put(Stat.SPECIAL_ATTACK, calcSpecialAttack());
         stats.put(Stat.SPECIAL_DEFENSE, calcSpecialDefense());
         stats.put(Stat.SPEED, calcSpeed());
+        
+        hiddenStats = new HashMap<>();
         hiddenStats.put(Stat.ACCURACY, 1.0);
         hiddenStats.put(Stat.EVASION, 1.0);
         hiddenStats.put(Stat.CRITICAL, 1.0);
