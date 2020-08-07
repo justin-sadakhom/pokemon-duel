@@ -241,11 +241,6 @@ public class Pokemon {
                 Stat.SPEED, species_stats[5]);
     }
     
-    private void initSpeciesData() {
-        
-        
-    }
-    
     public String name() {
         return name;
     }
