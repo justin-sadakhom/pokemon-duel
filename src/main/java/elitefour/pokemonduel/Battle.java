@@ -525,137 +525,120 @@ public class Battle implements ActionListener, MouseListener {
     private void playTurn(Action playerAction, int playerChoice,
             Action rivalAction, int rivalChoice) {
         
-        Action firstAction, secondAction;
-        int firstChoice, secondChoice;
-        Pokemon faster, slower;
-        Pokemon[] fasterTeam, slowerTeam;
-        String firstName, secondName;
-        
-        faster = Pokemon.compareSpeed(playerMon, rivalMon);
+        Trainer first, second;
+        Pokemon faster = Pokemon.compareSpeed(playerMon, rivalMon);
         
         if (playerMon == faster) {
-            firstAction = playerAction;
-            firstChoice = playerChoice;
-            secondAction = rivalAction;
-            secondChoice = rivalChoice;
-            slower = rivalMon;
-            fasterTeam = playerTeam;
-            slowerTeam = rivalTeam;
-            firstName = "Player";
-            secondName = "Rival";
+            first = new Trainer(playerTeam, "Player", playerAction,
+                    playerChoice, playerMon);
+            second = new Trainer(rivalTeam, "Rival", rivalAction,
+                    rivalChoice, rivalMon);
         }
         else {
-            firstAction = rivalAction;
-            firstChoice = rivalChoice;
-            secondAction = playerAction;
-            secondChoice = playerChoice;
-            slower = playerMon;
-            fasterTeam = rivalTeam;
-            slowerTeam = playerTeam;
-            firstName = "Rival";
-            secondName = "Player";
+            first = new Trainer(rivalTeam, "Rival", rivalAction,
+                    rivalChoice, rivalMon);
+            second = new Trainer(playerTeam, "Player", playerAction,
+                    playerChoice, playerMon);
         }
         
         // Faster player switches.
-        if (firstAction == Action.SWITCH) {
-            attemptSwitch(faster, fasterTeam[firstChoice], firstName);
+        if (first.action() == Action.SWITCH) {
+            attemptSwitch(first.active(),
+                    first.team(first.choice()), first.name());
             updateUI();
         }
         
         // Slower player switches.
-        if (secondAction == Action.SWITCH) {
-            attemptSwitch(slower, slowerTeam[secondChoice], secondName);
+        if (second.action() == Action.SWITCH) {
+            attemptSwitch(second.active(),
+                    second.team(second.choice()), second.name());
             updateUI();
         }
         
         // Faster player attacks.
-        if (firstAction == Action.ATTACK) {
-            attemptAttack(faster, firstChoice, slower);
+        if (first.action() == Action.ATTACK) {
+            attemptAttack(first.active(), first.choice(), second.active());
             updateUI();
 
-            if (slower.isFainted()) {
-                displayText(slower.name() + " fainted!");
+            if (second.active().isFainted()) {
+                displayText(second.active().name() + " fainted!");
                 delay(1);
 
-                if (!stillStanding(slowerTeam))
-                    displayText(secondName + " is out of usable Pokemon!",
-                            firstName + " wins!");
+                if (!stillStanding(second.team()))
+                    displayText(second.name() + " is out of usable Pokemon!",
+                            first.name() + " wins!");
 
                 else {
+                    int slot;
                     
-                    if (secondName.equals("Player")) {
+                    if (second.name().equals("Player")) {
                         
                         displayText("Select a Pokemon to send in.");
                         waitForClick();
-                        int slot = buttonChoice - 4;
+                        slot = buttonChoice - 4;
 
-                        while (slowerTeam[slot].isFainted()) {
-                            displayText("But " + slowerTeam[slot].name() +
+                        while (second.team(slot).isFainted()) {
+                            displayText("But " + second.team(slot).name() +
                                     "is out of energy!",
                                     "Select a Pokemon to send in.");
                             waitForClick();
                             slot = buttonChoice - 4;
                         }
-
-                        attemptSwitch(slower, slowerTeam[slot], secondName);
                     }
                     
                     else {
-                        
                         Random rng = new Random();
-                        int slot = rng.nextInt(6);
+                        slot = rng.nextInt(6);
 
-                        while (slowerTeam[slot].isFainted())
+                        while (second.team(slot).isFainted())
                             slot = rng.nextInt(6);
-
-                        attemptSwitch(slower, slowerTeam[slot], secondName);
                     }
+                    
+                    attemptSwitch(second.active(), second.team(slot), second.name());
                 }
             }
         }
         
         // Slower player attacks.
-        if (secondAction == Action.ATTACK) {
-            attemptAttack(slower, secondChoice, faster);
+        if (second.action() == Action.ATTACK) {
+            attemptAttack(second.active(), second.choice(), first.active());
             updateUI();
 
             if (faster.isFainted()) {
-                displayText(faster.name() + " fainted!");
+                displayText(first.active().name() + " fainted!");
                 delay(1);
 
-                if (!stillStanding(fasterTeam))
-                    displayText(firstName + " is out of usable Pokemon!",
-                            secondName + " wins!");
+                if (!stillStanding(first.team()))
+                    displayText(first.name() + " is out of usable Pokemon!",
+                            second.name() + " wins!");
 
                 else {
+                    int slot;
                     
-                    if (firstName.equals("Player")) {
+                    if (first.name().equals("Player")) {
                         
                         displayText("Select a Pokemon to send in.");
                         waitForClick();
-                        int slot = buttonChoice - 4;
+                        slot = buttonChoice - 4;
 
-                        while (fasterTeam[slot].isFainted()) {
-                            displayText("But " + fasterTeam[slot].name() +
+                        while (first.team(slot).isFainted()) {
+                            displayText("But " + first.team(slot).name() +
                                     "is out of energy!",
                                     "Select a Pokemon to send in.");
                             waitForClick();
                             slot = buttonChoice - 4;
                         }
-
-                        attemptSwitch(faster, fasterTeam[slot], firstName);
                     }
                     
                     else {
-                        
                         Random rng = new Random();
-                        int slot = rng.nextInt(6);
+                        slot = rng.nextInt(6);
 
-                        while (fasterTeam[slot].isFainted())
+                        while (first.team(slot).isFainted())
                             slot = rng.nextInt(6);
-
-                        attemptSwitch(faster, fasterTeam[slot], firstName);
                     }
+                    
+                    attemptSwitch(first.active(), first.team(slot), first.name());
                 }
             }
         }
@@ -685,12 +668,9 @@ public class Battle implements ActionListener, MouseListener {
         delay(1.5);
 
         if (user.equals("Player"))
-            playerMon = in;
+            setPlayerPokemon(in);
         else
-            rivalMon = in;
-        
-        displayText(user + " sends out " + in.name() + "!");
-        delay(1.5);
+            setRivalPokemon(in);
     }
     
     private void attemptAttack(Pokemon attacker, int slot, Pokemon defender) {
