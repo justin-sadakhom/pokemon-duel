@@ -118,15 +118,32 @@ public class Pokemon {
         this.level = 100;
         
         this.baseStats = initBaseStats();
-        this.evs = Map.of(Stat.HEALTH, 85, Stat.ATTACK, 85,
-                Stat.DEFENSE, 85, Stat.SPECIAL_ATTACK, 85,
-                Stat.SPECIAL_DEFENSE, 85, Stat.SPEED, 85);
-        this.ivs = Map.of(Stat.HEALTH, 31, Stat.ATTACK, 31,
-                Stat.DEFENSE, 31, Stat.SPECIAL_ATTACK, 31,
-                Stat.SPECIAL_DEFENSE, 31, Stat.SPEED, 31);
-        this.statStages = Map.of(Stat.ATTACK, 0, Stat.DEFENSE, 0,
-                Stat.SPECIAL_ATTACK, 0, Stat.SPECIAL_DEFENSE, 0, Stat.SPEED, 0,
-                Stat.ACCURACY, 0, Stat.EVASION, 0, Stat.CRITICAL, 0);
+        this.evs = Map.of(
+            Stat.HEALTH, 85,
+            Stat.ATTACK, 85,
+            Stat.DEFENSE, 85,
+            Stat.SPECIAL_ATTACK, 85,
+            Stat.SPECIAL_DEFENSE, 85,
+            Stat.SPEED, 85
+        );
+        this.ivs = Map.of(
+            Stat.HEALTH, 31,
+            Stat.ATTACK, 31,
+            Stat.DEFENSE, 31,
+            Stat.SPECIAL_ATTACK, 31,
+            Stat.SPECIAL_DEFENSE, 31,
+            Stat.SPEED, 31
+        );
+        this.statStages = Map.of(
+            Stat.ATTACK, 0,
+            Stat.DEFENSE, 0,
+            Stat.SPECIAL_ATTACK, 0,
+            Stat.SPECIAL_DEFENSE, 0,
+            Stat.SPEED, 0,
+            Stat.ACCURACY, 0,
+            Stat.EVASION, 0,
+            Stat.CRITICAL, 0
+        );
         
         calcStats();
         currentHealth = stats.get(Stat.HEALTH);
@@ -145,15 +162,32 @@ public class Pokemon {
         this.level = level;
         
         this.baseStats = initBaseStats();
-        this.evs = Map.of(Stat.HEALTH, evs[0], Stat.ATTACK, evs[1],
-                Stat.DEFENSE, evs[2], Stat.SPECIAL_ATTACK, evs[3],
-                Stat.SPECIAL_DEFENSE, evs[4], Stat.SPEED, evs[5]);
-        this.ivs = Map.of(Stat.HEALTH, ivs[0], Stat.ATTACK, ivs[1],
-                Stat.DEFENSE, ivs[2], Stat.SPECIAL_ATTACK, ivs[3],
-                Stat.SPECIAL_DEFENSE, ivs[4], Stat.SPEED, ivs[5]);
-        this.statStages = Map.of(Stat.ATTACK, 0, Stat.DEFENSE, 0,
-                Stat.SPECIAL_ATTACK, 0, Stat.SPECIAL_DEFENSE, 0, Stat.SPEED, 0,
-                Stat.ACCURACY, 0, Stat.EVASION, 0, Stat.CRITICAL, 0);
+        this.evs = Map.of(
+            Stat.HEALTH, evs[0],
+            Stat.ATTACK, evs[1],
+            Stat.DEFENSE, evs[2],
+            Stat.SPECIAL_ATTACK, evs[3],
+            Stat.SPECIAL_DEFENSE, evs[4],
+            Stat.SPEED, evs[5]
+        );
+        this.ivs = Map.of(
+            Stat.HEALTH, ivs[0],
+            Stat.ATTACK, ivs[1],
+            Stat.DEFENSE, ivs[2],
+            Stat.SPECIAL_ATTACK, ivs[3],
+            Stat.SPECIAL_DEFENSE, ivs[4], 
+            Stat.SPEED, ivs[5]
+        );
+        this.statStages = Map.of(
+            Stat.ATTACK, 0,
+            Stat.DEFENSE, 0,
+            Stat.SPECIAL_ATTACK, 0,
+            Stat.SPECIAL_DEFENSE, 0,
+            Stat.SPEED, 0,
+            Stat.ACCURACY, 0,
+            Stat.EVASION, 0,
+            Stat.CRITICAL, 0
+        );
         
         calcStats();
         currentHealth = stats.get(Stat.HEALTH);
