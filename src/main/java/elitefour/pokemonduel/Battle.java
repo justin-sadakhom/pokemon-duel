@@ -189,6 +189,12 @@ public class Battle implements ActionListener, MouseListener {
         switches[4].setBounds(430, 475, 100, 33);
         switches[5].setBounds(535, 475, 100, 33);
         
+        for (int i = 0; i < playerTeam.length; i++) {
+            String directory = "resources\\sprites\\icon" +
+                    playerTeam[i].name().toLowerCase() + ".png";
+            switches[i].setIcon(new ImageIcon(directory));
+        }
+        
         for (JButton move : moves)
             window.add(move);
         
