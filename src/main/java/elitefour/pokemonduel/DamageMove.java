@@ -77,7 +77,11 @@ public class DamageMove extends Move {
         
         double multiplier = 1.0;
         
-        if (Arrays.asList(targetType[0].immunities()).contains(moveType) || 
+        if (Type.immunities.containsKey(targetType[0]) && 
+                Arrays.asList(targetType[0].immunities()).contains(moveType))
+            return 0;
+        
+        if (Type.immunities.containsKey(targetType[1]) && 
                 Arrays.asList(targetType[1].immunities()).contains(moveType))
             return 0;
         

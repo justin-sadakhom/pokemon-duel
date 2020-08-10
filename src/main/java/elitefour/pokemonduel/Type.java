@@ -23,7 +23,7 @@ public enum Type {
     DRAGON,
     DARK;
     
-    private static final Map<Type, Type[]> weaknesses = Map.ofEntries(
+    public static final Map<Type, Type[]> weaknesses = Map.ofEntries(
         entry(Type.NORMAL, new Type[]{Type.FIGHTING}),
         entry(Type.FIGHTING, new Type[]{Type.FLYING, Type.PSYCHIC}),
         entry(Type.FLYING, new Type[]{Type.ROCK, Type.ELECTRIC, Type.ICE}),
@@ -46,13 +46,35 @@ public enum Type {
         entry(Type.DARK, new Type[]{Type.FIGHTING, Type.BUG})
     );
     
-    private static final Map<Type, Type[]> resistances = Map.ofEntries(
+    public static final Map<Type, Type[]> resistances = Map.ofEntries(
         entry(Type.NORMAL, new Type[0]),
-        entry(Type.FIGHTING, new Type[]{Type.ROCK, Type.BUG, Type.DARK})
-        // INCOMPLETE SET!
+        entry(Type.FIGHTING, new Type[]{Type.ROCK, Type.BUG, Type.DARK}),
+        entry(Type.FLYING, new Type[]{Type.FIGHTING, Type.BUG, Type.GRASS}),
+        entry(Type.POISON, new Type[]{Type.FIGHTING, Type.POISON, Type.BUG,
+            Type.GRASS}),
+        entry(Type.GROUND, new Type[]{Type.POISON, Type.ROCK}),
+        entry(Type.ROCK, new Type[]{Type.NORMAL, Type.FLYING, Type.POISON,
+            Type.FIRE}),
+        entry(Type.BUG, new Type[]{Type.FIGHTING, Type.GROUND, Type.GRASS}),
+        entry(Type.GHOST, new Type[]{Type.POISON, Type.BUG}),
+        entry(Type.STEEL, new Type[]{Type.NORMAL, Type.FLYING, Type.ROCK,
+        Type.BUG, Type.STEEL, Type.GRASS, Type.PSYCHIC, Type.ICE, Type.DRAGON}),
+        entry(Type.FIRE, new Type[]{Type.BUG, Type.STEEL, Type.FIRE, Type.GRASS,
+        Type.ICE}),
+        entry(Type.WATER, new Type[]{Type.STEEL, Type.FIRE, Type.WATER,
+            Type.ICE}),
+        entry(Type.GRASS, new Type[]{Type.GROUND, Type.WATER, Type.GRASS,
+            Type.ELECTRIC}),
+        entry(Type.ELECTRIC, new Type[]{Type.FLYING, Type.STEEL,
+            Type.ELECTRIC}),
+        entry(Type.PSYCHIC, new Type[]{Type.FIGHTING, Type.PSYCHIC}),
+        entry(Type.ICE, new Type[]{Type.ICE}),
+        entry(Type.DRAGON, new Type[]{Type.FIRE, Type.WATER, Type.GRASS,
+            Type.ELECTRIC}),
+        entry(Type.DARK, new Type[]{Type.GHOST, Type.DARK})
     );
     
-    private static final Map<Type, Type[]> immunities = Map.ofEntries(
+    public static final Map<Type, Type[]> immunities = Map.ofEntries(
         entry(Type.NORMAL, new Type[]{Type.GHOST}),
         entry(Type.FLYING, new Type[]{Type.GROUND}),
         entry(Type.GROUND, new Type[]{Type.ELECTRIC}),
