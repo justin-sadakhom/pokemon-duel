@@ -39,12 +39,31 @@ public class InfoField extends JComponent {
         }
     }
     
-    public void update(Pokemon pokemon) {
+    public void update(Pokemon pokemon, boolean ally) {
         
         double health = pokemon.healthPercent();
         
-        healthBar.setBounds(355, 250, (int)(health * 1.5), 13);
+        if (ally)
+            healthBar.setBounds(355, 250, (int)(health * 1.5), 13);
+        else
+            healthBar.setBounds(140, 75, (int)(health * 1.5), 13);
+        
         healthPercent.setText("" + (int)health + '%');
         name.setText("<html><font size=6>" + pokemon.name() + "</font></html>");
+    }
+    
+    public JLabel[] getLabels() {
+        return new JLabel[]{healthBar, healthBG, healthPercent, name};
+    }
+    
+    @Override
+    public void setVisible(boolean state) {
+        healthBar.setVisible(state);
+        healthBG.setVisible(state);
+        healthPercent.setVisible(state);
+        name.setVisible(state);
+        
+        healthBar.setBorder(Battle.BLACK_BORDER);
+        healthBG.setBorder(Battle.BLACK_BORDER);
     }
 }

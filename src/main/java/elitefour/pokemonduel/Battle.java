@@ -42,7 +42,7 @@ public class Battle implements ActionListener {
     private final JLabel[] rivalTeamDisplay = new JLabel[6];
     private final JButton[] moves = new JButton[4];
     private final JButton[] switches = new JButton[6];
-    private final Border BLACK_BORDER = 
+    public static final Border BLACK_BORDER = 
             BorderFactory.createLineBorder(Color.BLACK, 1);
     
     /* SPRITES */
@@ -204,8 +204,13 @@ public class Battle implements ActionListener {
         window.add(textContainer);
         window.add(attackLabel);
         window.add(switchLabel);
-        window.add(playerInfo);
-        window.add(rivalInfo);
+        
+        for (JLabel label : playerInfo.getLabels())
+            window.add(label);
+        
+        for (JLabel label : rivalInfo.getLabels())
+            window.add(label);
+        
         window.add(playerPokemon);
         window.add(rivalPokemon);
         window.add(playerBase);
@@ -308,15 +313,25 @@ public class Battle implements ActionListener {
         }
     }
     
-    private void revealUI() {
-        playerInfo.setOpaque(true);
-        rivalInfo.setOpaque(true);
+    private void chooseLead() {
+        
+        displayText("How will you start?");
+        waitForClick();
+        
+        int slot = buttonChoice;
+        Random rng = new Random();
+        
+        setPlayerPokemon(playerTeam[slot - 4]);
+        setRivalPokemon(rivalTeam[rng.nextInt(rivalTeam.length)]);
+        
+        playerInfo.setVisible(true);
+        rivalInfo.setVisible(true);
     }
     
     private void updateUI() {
         
-        playerInfo.update(playerMon);
-        rivalInfo.update(rivalMon);
+        playerInfo.update(playerMon, true);
+        rivalInfo.update(rivalMon, false);
         
         for (int i = 0; i < playerMon.moves().length; i++) {
             moves[i].setText(playerMon.moves()[i].name());
@@ -343,25 +358,9 @@ public class Battle implements ActionListener {
         delay(1.5);
     }
     
-    private void chooseLead() {
-        
-        displayText("How will you start?");
-        waitForClick();
-        
-        int slot = buttonChoice;
-        Random rng = new Random();
-        
-        setPlayerPokemon(playerTeam[slot - 4]);
-        setRivalPokemon(rivalTeam[rng.nextInt(rivalTeam.length)]);
-        
-        playerInfo.setVisible(true);
-        rivalInfo.setVisible(true);
-    }
-    
     private void loopBattle() {
         
         chooseLead();
-        revealUI();
         updateUI();
         
         while (stillStanding(playerTeam) && stillStanding(rivalTeam)) {
@@ -376,10 +375,10 @@ public class Battle implements ActionListener {
             
             int rivalChoice;
             Random rng = new Random();
-            rivalChoice = rng.nextInt(4);
+            rivalChoice = rng.nextInt(rivalMon.moves().length);
             
             while (rivalMon.moves()[rivalChoice].PP() == 0)
-                rivalChoice = rng.nextInt(4);
+                rivalChoice = rng.nextInt(rivalMon.moves().length);
             
             playTurn(playerAction, actionArray[1], Action.ATTACK, rivalChoice);
         }
