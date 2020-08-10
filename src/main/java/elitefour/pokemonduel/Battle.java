@@ -165,7 +165,7 @@ public class Battle {
 
             if (second.active().isFainted()) {
                 gui.displayText(second.active().name() + " fainted!");
-                gui.delay(1);
+                gui.delay(2);
 
                 if (!stillStanding(second.team()))
                     
@@ -214,7 +214,7 @@ public class Battle {
 
             if (faster.isFainted()) {
                 gui.displayText(first.active().name() + " fainted!");
-                gui.delay(1);
+                gui.delay(2);
 
                 if (!stillStanding(first.team()))
                     
@@ -262,7 +262,7 @@ public class Battle {
         gui.displayText(
             trainer.name() + " withdraws " + trainer.active().name() + "!"
         );
-        gui.delay(1.5);
+        gui.delay(2);
 
         trainer.setActive(in);
         
@@ -305,14 +305,14 @@ public class Battle {
                 
                 if (obstacle.mixStatus().contains(Status.MixStatus.CONFUSION)) {
                     gui.displayText(attacker.name() + " is confused!");
-                    gui.delay(1);
+                    gui.delay(2);
                     gui.displayText(attacker.name() + " snapped out of confusion!");
                 }
                 
                 if (obstacle.mixStatus().contains(Status.MixStatus.INFATUATION)) {
                     gui.displayText(attacker.name() + " is in love",
                             "with the foe's " + defender.name() + "!");
-                    gui.delay(1);
+                    gui.delay(2);
                 }
             }
             
@@ -348,7 +348,7 @@ public class Battle {
                 if (obstacle.mixStatus().contains(Status.MixStatus.CONFUSION)) {
                     
                     gui.displayText(attacker.name() + " is confused!");
-                    gui.delay(1);
+                    gui.delay(2);
                     gui.displayText("It hurt itself in confusion!");
                     
                     // Calculate and apply self-inflicted damage.
@@ -358,7 +358,7 @@ public class Battle {
                 if (obstacle.mixStatus().contains(Status.MixStatus.INFATUATION)) {
                     gui.displayText(attacker.name() + " is in love"
                             , "with the foe's " + defender.name() + "!");
-                    gui.delay(1);
+                    gui.delay(2);
                     gui.displayText(attacker.name() + " is immobilized by love!");
                     gui.update(player.active(), rival.active());
                 }
@@ -370,6 +370,7 @@ public class Battle {
         
         Move move = user.moves()[slot];
         gui.displayText(Move.attemptText(user.name(), move.name()));
+        gui.delay(2);
         
         // Damaging move.
         if (move instanceof DamageMove) {
@@ -383,6 +384,7 @@ public class Battle {
             // Move misses.
             if (rng.nextInt(100) > move.hitChance(user, target)) {
                 gui.displayText(Move.missText(user.name()));
+                gui.delay(2);
             }
             
             // Move lands.

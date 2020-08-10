@@ -123,9 +123,9 @@ public class DamageMove extends Move {
         
         double multiplier = typeAdvantage(moveType, defenderType);
 
-        if (multiplier == 2.0)
+        if (multiplier == 2.0 || multiplier == 4.0)
             return "It was super effective!";
-        else if (multiplier == 0.5)
+        else if (multiplier == 0.5 || multiplier == 0.25)
             return "It's not very effective...";
         else // multiplier == 0
             return "It had no effect...";
