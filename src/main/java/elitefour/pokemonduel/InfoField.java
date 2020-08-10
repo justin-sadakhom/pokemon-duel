@@ -63,7 +63,7 @@ public class InfoField extends JComponent {
         healthPercent.setVisible(state);
         name.setVisible(state);
         
-        healthBar.setBorder(Battle.BLACK_BORDER);
-        healthBG.setBorder(Battle.BLACK_BORDER);
+        healthBar.setBorder(GUI.BLACK_BORDER);
+        healthBG.setBorder(GUI.BLACK_BORDER);
     }
 }

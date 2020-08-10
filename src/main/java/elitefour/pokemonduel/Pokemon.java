@@ -281,13 +281,17 @@ public class Pokemon {
         return moves;
     }
     
+    public Move moves(int slot) {
+        return moves[slot];
+    }
+    
     public void setMove(Move move, int slot) {
         int index = slot - 1;
         moves[index] = move;
     }
     
     public int useMove(int slot, Pokemon target) {
-        return moves[slot - 1].use(this, target);
+        return moves[slot].use(this, target);
     }
     
     public Nature nature() {
