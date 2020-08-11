@@ -1,4 +1,4 @@
-![Image of Pokémon battle](https://i.imgur.com/NI48KoJ.png)
+![Image of Pokémon battle](https://i.imgur.com/3y5JwnC.png)
 
 # Pokémon Duel
 
