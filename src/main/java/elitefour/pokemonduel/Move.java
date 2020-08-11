@@ -132,7 +132,7 @@ public abstract class Move {
     
     public boolean isHit(Pokemon user, Pokemon target) {
         Random rng = new Random();
-        return rng.nextInt(100) <= hitChance(user, target);
+        return rng.nextInt(100) < hitChance(user, target);
     }
     
     public static String attemptText(String user, String moveName) {
