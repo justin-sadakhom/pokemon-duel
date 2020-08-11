@@ -101,9 +101,9 @@ public class Pokemon {
     
     /* Statistics fields */
     
-    private final Map<Stat, Integer> baseStats, evs, ivs, statStages;
-    private Map<Stat, Integer> stats;
-    private Map<Stat, Double> hiddenStats;
+    private final Map<Stat, Integer> baseStats, evs, ivs;
+    private HashMap<Stat, Integer> stats, statStages;
+    private HashMap<Stat, Double> hiddenStats;
     private int currentHealth;
     
     /* Constructor with default values for fields. */
@@ -134,16 +134,15 @@ public class Pokemon {
             Stat.SPECIAL_DEFENSE, 31,
             Stat.SPEED, 31
         );
-        this.statStages = Map.of(
-            Stat.ATTACK, 0,
-            Stat.DEFENSE, 0,
-            Stat.SPECIAL_ATTACK, 0,
-            Stat.SPECIAL_DEFENSE, 0,
-            Stat.SPEED, 0,
-            Stat.ACCURACY, 0,
-            Stat.EVASION, 0,
-            Stat.CRITICAL, 0
-        );
+        this.statStages = new HashMap();
+        this.statStages.put(Stat.ATTACK, 0);
+        this.statStages.put(Stat.DEFENSE, 0);
+        this.statStages.put(Stat.SPECIAL_ATTACK, 0);
+        this.statStages.put(Stat.SPECIAL_DEFENSE, 0);
+        this.statStages.put(Stat.SPEED, 0);
+        this.statStages.put(Stat.ACCURACY, 0);
+        this.statStages.put(Stat.EVASION, 0);
+        this.statStages.put(Stat.CRITICAL, 0);
         
         calcStats();
         currentHealth = stats.get(Stat.HEALTH);
@@ -178,16 +177,15 @@ public class Pokemon {
             Stat.SPECIAL_DEFENSE, ivs[4], 
             Stat.SPEED, ivs[5]
         );
-        this.statStages = Map.of(
-            Stat.ATTACK, 0,
-            Stat.DEFENSE, 0,
-            Stat.SPECIAL_ATTACK, 0,
-            Stat.SPECIAL_DEFENSE, 0,
-            Stat.SPEED, 0,
-            Stat.ACCURACY, 0,
-            Stat.EVASION, 0,
-            Stat.CRITICAL, 0
-        );
+        this.statStages = new HashMap();
+        this.statStages.put(Stat.ATTACK, 0);
+        this.statStages.put(Stat.DEFENSE, 0);
+        this.statStages.put(Stat.SPECIAL_ATTACK, 0);
+        this.statStages.put(Stat.SPECIAL_DEFENSE, 0);
+        this.statStages.put(Stat.SPEED, 0);
+        this.statStages.put(Stat.ACCURACY, 0);
+        this.statStages.put(Stat.EVASION, 0);
+        this.statStages.put(Stat.CRITICAL, 0);
         
         calcStats();
         currentHealth = stats.get(Stat.HEALTH);
@@ -647,11 +645,11 @@ public class Pokemon {
         int currentStage = statStage(stat);
         
         if (currentStage + amount <= maxStage) {
-            statStages.put(stat, currentStage + amount);
+            statStages.replace(stat, currentStage + amount);
             return true;
         }
         else {
-            statStages.put(stat, maxStage);
+            statStages.replace(stat, maxStage);
             return false;
         }
     }
@@ -668,18 +666,18 @@ public class Pokemon {
         int currentStage = statStage(stat);
         
         if (currentStage + amount >= minStage) {
-            statStages.put(stat, currentStage - amount);
+            statStages.replace(stat, currentStage - amount);
             return true;
         }
         else {
-            statStages.put(stat, minStage);
+            statStages.replace(stat, minStage);
             return false;
         }
     }
     
     public void resetStatStages() {
         statStages.keySet().forEach(key -> {
-            statStages.put(key, 0);
+            statStages.replace(key, 0);
         });
     }
     

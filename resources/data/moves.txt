@@ -10,7 +10,7 @@ Special
 20
 -
 -
-Special_Attack
+Attack/Special_Attack
 1
 Vine Whip
 Grass

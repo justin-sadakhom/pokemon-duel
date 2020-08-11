@@ -1,5 +1,6 @@
 package elitefour.pokemonduel;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Battle {
@@ -417,15 +418,44 @@ public class Battle {
             int result = user.useMove(slot, target);
 
             // Move misses.
-            if (rng.nextInt(100) < move.hitChance(user, target))
+            if (rng.nextInt(100) > move.hitChance(user, target))
                 gui.displayText(Move.missText(user.name()));
             
             // Move hits.
             else {
                 
                 if (move instanceof Buff) {
-                    boolean success = result == 1;
-                    gui.displayText(Buff.hitText(user.name(), (Buff)move, success));
+                    
+                    ArrayList<Boolean> success = new ArrayList<>();
+                    boolean one = ((Buff)(move)).affectedStats().size() == 1;
+                    
+                    switch (result) {
+                        
+                        case 0:
+                            success.add(false);
+                            if (!one)
+                                success.add(false);
+                            break;
+                        case 1:
+                            success.add(true);
+                            if (!one)
+                                success.add(true);
+                            break;
+                        case 2:
+                            success.add(true);
+                            success.add(false);
+                            break;
+                        case 3:
+                            success.add(false);
+                            success.add(true);  
+                            break;
+                    }
+                    
+                    ArrayList<String> queue = 
+                            ((Buff)(move)).hitText(user.name(), success);
+                    
+                    for (int i = 0; i < queue.size(); i++)
+                        gui.displayText(queue.get(i));
                 }
             }
         }

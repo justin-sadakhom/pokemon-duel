@@ -4,17 +4,18 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Buff extends StatusMove {
     
-    private final Pokemon.Stat affectedStat;
+    private final ArrayList<Pokemon.Stat> affectedStats = new ArrayList<>();
     private final int stages;
     
     public Buff(String name) {
         
         super(name);
         
-        Pokemon.Stat tempStat = Pokemon.Stat.CRITICAL;
+        String tempStats = "";
         int tempStage = -1;
         
         try {
@@ -36,10 +37,11 @@ public class Buff extends StatusMove {
                     
                     switch (i) {
                         case 0:
-                            tempStat = Pokemon.Stat.valueOf(line.toUpperCase());
+                            tempStats = line;
                             break;
                         case 1:
                             tempStage = Integer.parseInt(line);
+                            break;
                     }
                 }
             }
@@ -47,7 +49,11 @@ public class Buff extends StatusMove {
             error.printStackTrace(System.out);
         }
         
-        this.affectedStat = tempStat;
+        String[] statsArray = tempStats.split("/");
+        
+        for (String stat : statsArray)
+            this.affectedStats.add(Pokemon.Stat.valueOf(stat.toUpperCase()));
+                 
         this.stages = tempStage;
     }
     
@@ -56,37 +62,66 @@ public class Buff extends StatusMove {
         
         deductPP(1);
         
-        if (user.raiseStatStage(affectedStat, stages))
-            return 1;
-        else
-            return 0;
+        if (affectedStats.size() == 1) {
+            
+            if (user.raiseStatStage(affectedStats.get(0), stages))
+                return 1;
+            
+            else
+                return 0;
+        }
+        
+        else { // affectedStats.size() == 2
+            
+            boolean first = user.raiseStatStage(affectedStats.get(0), stages);
+            boolean second = user.raiseStatStage(affectedStats.get(1), stages);
+            
+            if (first && second)
+                return 1;
+            else if (!first && second)
+                return 2;
+            else if (first && !second)
+                return 3;
+            else
+                return 0;
+        }
     }
     
     public int stages() {
         return stages;
     }
     
-    public String affectedStat() {
-        return affectedStat.name();
+    public ArrayList<Pokemon.Stat> affectedStats() {
+        return affectedStats;
     }
     
-    public static String hitText(String name, Buff move, boolean success) {
+    public ArrayList<String> hitText(String name, ArrayList<Boolean> success) {
         
-        String message = name + "'s " + move.affectedStat().toLowerCase();
+        ArrayList<String> result = new ArrayList<>();
         
-        // Affected stat stage is already at max.
-        if (!success)
-            return message + " won't go any higher!";
+        for (int i = 0; i < affectedStats.size(); i++) {
+            
+            String message = name + "'s " + 
+                    affectedStats.get(i).name().replace("_", " ").toLowerCase();
+        
+            // Affected stat stage is already at max.
+            if (!success.get(i))
+                result.add(message + " won't go any higher!");
 
-        // There's still room for change.
-        else {
+            // There's still room for change.
+            else {
 
-            switch (move.stages()) {
-                case 1:
-                    return message + " rose!";
-                default: // case 2
-                    return message + " rose sharply!";
+                switch (stages()) {
+                    case 1:
+                        result.add(message + " rose!");
+                        break;
+                    case 2:
+                        result.add(message + " rose sharply!");
+                        break;
+                }
             }
         }
+        
+        return result;
     }
 }
