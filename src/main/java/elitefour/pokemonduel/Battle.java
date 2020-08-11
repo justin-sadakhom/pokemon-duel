@@ -370,10 +370,8 @@ public class Battle {
             if (move instanceof MultiHitMove)
                 hits = ((MultiHitMove)move).hits();
             
-            Random rng = new Random();
-            
             // Move misses.
-            if (rng.nextInt(100) > move.hitChance(user, target))
+            if (!move.isHit(user, target))
                 gui.displayText(Move.missText(user.name()));
             
             // Move lands.
@@ -414,12 +412,10 @@ public class Battle {
         
         // Non-damaging move.
         else {
-            
-            Random rng = new Random();
             int result = user.useMove(slot, target);
 
             // Move misses.
-            if (rng.nextInt(100) > move.hitChance(user, target))
+            if (!move.isHit(user, target))
                 gui.displayText(Move.missText(user.name()));
             
             // Move hits.

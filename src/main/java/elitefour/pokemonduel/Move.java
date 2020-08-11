@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Random;
 
 public abstract class Move {
     
@@ -120,17 +121,18 @@ public abstract class Move {
         return power;
     }
     
-    public int accuracy() {
-        return accuracy;
-    }
-    
-    public double hitChance(Pokemon user, Pokemon target) {
+    private double hitChance(Pokemon user, Pokemon target) {
         
         if (accuracy == 0)
             return 100;
         else
             return user.hiddenStat(Pokemon.Stat.ACCURACY) * accuracy * 
                     target.hiddenStat(Pokemon.Stat.EVASION);
+    }
+    
+    public boolean isHit(Pokemon user, Pokemon target) {
+        Random rng = new Random();
+        return rng.nextInt(100) <= hitChance(user, target);
     }
     
     public static String attemptText(String user, String moveName) {
