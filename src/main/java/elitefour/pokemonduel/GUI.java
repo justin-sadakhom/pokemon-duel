@@ -28,7 +28,7 @@ public class GUI implements ActionListener {
     
     private final JFrame window;
     private final JLabel playerPokemon, rivalPokemon;
-    private final InfoField playerInfo, rivalInfo;
+    private final BattleBox playerInfo, rivalInfo;
     private final JLabel battlefield, playerBase, rivalBase;
     private final JLabel textContainer, battleText1, battleText2;
     private final JLabel attackLabel, switchLabel;
@@ -87,8 +87,8 @@ public class GUI implements ActionListener {
         playerPokemon = new JLabel();
         rivalPokemon = new JLabel();
         
-        playerInfo = new InfoField(font, true);
-        rivalInfo = new InfoField(font, false);
+        playerInfo = new BattleBox(font, true);
+        rivalInfo = new BattleBox(font, false);
         
         attackLabel = new JLabel("<html><font size=5><font color=#7b241c><i>Attack</i></font></html>");
         switchLabel = new JLabel("<html><font size=5><font color=#154360><i>Switch</i></font></html>");
