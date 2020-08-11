@@ -2,9 +2,7 @@ package elitefour.pokemonduel;
 
 public class DrainMove extends DamageMove {
     
-    public DrainMove(String name, Type type, Category category,
-            int pp, int power, int accuracy) {
-        
+    public DrainMove(String name) {
         super(name);
     }
     
@@ -13,7 +11,7 @@ public class DrainMove extends DamageMove {
         return super.use(user, target);
     }
     
-    public void useSecondary(Pokemon user, Pokemon target, int damage) {
+    public void useSecondary(Pokemon user, int damage) {
         user.restoreHealth(damage / 2);
     }
     

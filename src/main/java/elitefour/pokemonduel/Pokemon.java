@@ -607,7 +607,7 @@ public class Pokemon {
         }
         
         else {
-            deduction = currentHealth - damage;
+            deduction = damage;
             currentHealth -= damage;
         }
         

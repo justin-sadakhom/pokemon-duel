@@ -165,7 +165,6 @@ public class Battle {
 
             if (second.active().isFainted()) {
                 gui.displayText(second.active().name() + " fainted!");
-                gui.delay(2);
 
                 if (!stillStanding(second.team()))
                     
@@ -214,7 +213,6 @@ public class Battle {
 
             if (faster.isFainted()) {
                 gui.displayText(first.active().name() + " fainted!");
-                gui.delay(2);
 
                 if (!stillStanding(first.team()))
                     
@@ -262,7 +260,6 @@ public class Battle {
         gui.displayText(
             trainer.name() + " withdraws " + trainer.active().name() + "!"
         );
-        gui.delay(2);
 
         trainer.setActive(in);
         
@@ -274,7 +271,6 @@ public class Battle {
         gui.displayText(
             trainer.name() + " sends out " + trainer.active().name() + "!"
         );
-        gui.delay(2);
     }
     
     private void attemptAttack(Pokemon attacker, int slot, Pokemon defender) {
@@ -305,15 +301,12 @@ public class Battle {
                 
                 if (obstacle.mixStatus().contains(Status.MixStatus.CONFUSION)) {
                     gui.displayText(attacker.name() + " is confused!");
-                    gui.delay(2);
                     gui.displayText(attacker.name() + " snapped out of confusion!");
                 }
                 
-                if (obstacle.mixStatus().contains(Status.MixStatus.INFATUATION)) {
+                if (obstacle.mixStatus().contains(Status.MixStatus.INFATUATION))
                     gui.displayText(attacker.name() + " is in love",
                             "with the foe's " + defender.name() + "!");
-                    gui.delay(2);
-                }
             }
             
             processAttack(attacker, slot, defender);
@@ -348,7 +341,6 @@ public class Battle {
                 if (obstacle.mixStatus().contains(Status.MixStatus.CONFUSION)) {
                     
                     gui.displayText(attacker.name() + " is confused!");
-                    gui.delay(2);
                     gui.displayText("It hurt itself in confusion!");
                     
                     // Calculate and apply self-inflicted damage.
@@ -358,7 +350,6 @@ public class Battle {
                 if (obstacle.mixStatus().contains(Status.MixStatus.INFATUATION)) {
                     gui.displayText(attacker.name() + " is in love"
                             , "with the foe's " + defender.name() + "!");
-                    gui.delay(2);
                     gui.displayText(attacker.name() + " is immobilized by love!");
                     gui.update(player.active(), rival.active());
                 }
@@ -370,7 +361,6 @@ public class Battle {
         
         Move move = user.moves(slot);
         gui.displayText(Move.attemptText(user.name(), move.name()));
-        gui.delay(2);
         
         // Damaging move.
         if (move instanceof DamageMove) {
@@ -382,10 +372,8 @@ public class Battle {
             Random rng = new Random();
             
             // Move misses.
-            if (rng.nextInt(100) > move.hitChance(user, target)) {
+            if (rng.nextInt(100) > move.hitChance(user, target))
                 gui.displayText(Move.missText(user.name()));
-                gui.delay(2);
-            }
             
             // Move lands.
             else {
@@ -395,7 +383,7 @@ public class Battle {
 
                     double multiplier = 
                         DamageMove.typeAdvantage(move.type(), target.type());
-
+                    
                     if (multiplier != 1.0)
                         gui.displayText(DamageMove.hitText(move.type(),
                                 target.type()));
@@ -412,7 +400,7 @@ public class Battle {
                     }
 
                     else if (move instanceof DrainMove) {
-                        ((DrainMove)move).useSecondary(user, target, damage);
+                        ((DrainMove)move).useSecondary(user, damage);
                         gui.displayText(DrainMove.hitText(target.name()));
                     }
                     
@@ -448,7 +436,7 @@ public class Battle {
         // DEMO
         Pokemon[] teamOne = new Pokemon[1];
         teamOne[0] = new Pokemon("Venusaur");
-        teamOne[0].setMove(new DamageMove("Mega Drain"), 1);
+        teamOne[0].setMove(new DrainMove("Mega Drain"), 1);
         teamOne[0].setMove(new Buff("Growth"), 2);
         teamOne[0].setMove(new DamageMove("Vine Whip"), 3);
         teamOne[0].setMove(new DamageMove("Tackle"), 4);

@@ -219,6 +219,8 @@ public class GUI implements ActionListener {
         
         battleText1.repaint();
         battleText2.repaint();
+        
+        delay(2);
     }
     
     public void displayText(String output1, String output2) {
@@ -230,6 +232,8 @@ public class GUI implements ActionListener {
         
         battleText1.repaint();
         battleText2.repaint();
+        
+        delay(2);
     }
     
     @Override
