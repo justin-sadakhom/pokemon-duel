@@ -62,7 +62,7 @@ public class DamageMove extends Move {
     private static double random() {
 
         Random rng = new Random();
-        return (rng.nextInt(15) + 85) / 100;
+        return (rng.nextInt(15) + 85) / 100.0;
     }
     
     private double STAB(Type[] userType, Type moveType) {

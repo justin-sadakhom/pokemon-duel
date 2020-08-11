@@ -368,7 +368,7 @@ public class Battle {
     
     private void processAttack(Pokemon user, int slot, Pokemon target) {
         
-        Move move = user.moves()[slot];
+        Move move = user.moves(slot);
         gui.displayText(Move.attemptText(user.name(), move.name()));
         gui.delay(2);
         

@@ -29,12 +29,16 @@ public class InfoField extends JComponent {
         name.setHorizontalAlignment((int)Component.CENTER_ALIGNMENT);
         
         if (ally) {
+            healthBar.setBounds(355, 250, 150, 13);
             healthBG.setBounds(355, 250, 150, 13);
+            healthPercent.setBounds(505, 250, 35, 13);
             name.setBounds(360, 220, 150, 25);
         }
         
         else {
+            healthBar.setBounds(140, 75, 150, 13);
             healthBG.setBounds(140, 75, 150, 13);
+            healthPercent.setBounds(289, 75, 35, 13);
             name.setBounds(145, 45, 150, 25);
         }
     }

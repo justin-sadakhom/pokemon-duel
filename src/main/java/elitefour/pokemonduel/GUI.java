@@ -322,12 +322,13 @@ public class GUI implements ActionListener {
         rivalPokemon.setIcon(new ImageIcon("resources\\sprites\\front\\" + 
                 back.name().toLowerCase() + ".png"));
         
-        for (int i = 0; i < playerTeam.length; i++) {
-            if (playerTeam[i].currentHealth() == 0)
-                playerPokemon.setIcon(GRAY_BALL);
-            if (rivalTeam[i].currentHealth() == 0)
-                rivalPokemon.setIcon(GRAY_BALL);
-        }
+        for (int i = 0; i < playerTeam.length; i++)
+            if (playerTeam[i].isFainted())
+                playerTeamDisplay[i].setIcon(GRAY_BALL);
+        
+        for (int i = 0; i < rivalTeam.length; i++)
+            if (rivalTeam[i].isFainted())
+                rivalTeamDisplay[i].setIcon(GRAY_BALL);
         
         window.repaint();
         delay(1.5);
