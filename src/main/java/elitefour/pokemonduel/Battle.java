@@ -396,8 +396,9 @@ public class Battle {
 
                         boolean success = ((DamageDebuff)move).
                                 useSecondary(target, user);
-                        gui.displayText(DamageDebuff.hitText(target.name(),
-                                (DamageDebuff)move, success));
+                        gui.displayText(
+                            ((DamageDebuff)move).hitText(target.name(), success)
+                        );
                     }
 
                     else if (move instanceof DrainMove) {

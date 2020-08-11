@@ -85,9 +85,9 @@ public class DamageDebuff extends DamageMove {
         return affectedStat.name();
     }
     
-    public static String hitText(String name, DamageDebuff move, boolean success) {
+    public String hitText(String name, boolean success) {
         
-        String message = name + "'s " + move.affectedStat().toLowerCase();
+        String message = name + "'s " + affectedStat().toLowerCase();
         
         // Affected stat stage is already at min.
         if (!success)
@@ -96,7 +96,7 @@ public class DamageDebuff extends DamageMove {
         // There's still room for change.
         else {
 
-            switch (move.stages()) {
+            switch (stages()) {
                 case -1:
                     return message + " fell!";
                 default: // case -2
