@@ -53,6 +53,16 @@ public class BattleBox {
             healthBar.setBounds(455, 253, (int)(health * 0.95), 4);
         else
             healthBar.setBounds(185, 111, (int)(health * 0.95), 4);
+
+        if (20 < pokemon.healthPercent() &&
+                pokemon.healthPercent() <= 50)
+            healthBar.setBackground(Color.decode("#fcbd03"));
+        
+        else if (pokemon.healthPercent() < 20)
+            healthBar.setBackground(Color.decode("#f85828"));
+        
+        else
+            healthBar.setBackground(Color.decode("#49c613"));
         
         name.setText("<html><font size=6>" + pokemon.name() + "</font></html>");
     }
