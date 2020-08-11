@@ -208,7 +208,7 @@ public class Battle {
         }
         
         // Slower player attacks.
-        if (second.action() == Action.ATTACK) {
+        if (second.action() == Action.ATTACK && !second.active().isFainted()) {
             attemptAttack(second.active(), second.choice(), first.active());
             gui.update(player.active(), rival.active());
 
