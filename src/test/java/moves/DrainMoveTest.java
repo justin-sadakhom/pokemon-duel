@@ -23,16 +23,16 @@ class DrainMoveTest {
         attacker.deductHealth(100);
         
         int damage = attacker.useMove(0, defender);
-        assertEquals(true, damage >= 34 && damage <= 41);
+        assertEquals(damage >= 34 && damage <= 41, true);
         assertEquals(
-            damage,
-            defender.stat(Pokemon.Stat.HEALTH) - defender.currentHealth()
+            defender.stat(Pokemon.Stat.HEALTH) - defender.currentHealth(),
+            damage
         );
         
         ((DrainMove)(attacker.moves(0))).useSecondary(attacker, damage);
         assertEquals(
-            attacker.currentHealth(),
-            attacker.stat(Pokemon.Stat.HEALTH) - 100 + (damage / 2)
+            attacker.stat(Pokemon.Stat.HEALTH) - 100 + (damage / 2),
+            attacker.currentHealth()
         );
     }
     
@@ -47,14 +47,13 @@ class DrainMoveTest {
         
         ((DrainMove)(attacker.moves(0))).useSecondary(attacker, damage);
         assertEquals(
-                
-            attacker.currentHealth(),
-            attacker.stat(Pokemon.Stat.HEALTH)
+            attacker.stat(Pokemon.Stat.HEALTH),
+            attacker.currentHealth()
         );
     }
     
     @Test void battleText() {
         String result = DrainMove.hitText(defender.name());
-        assertEquals(result, defender.name() + " had its energy drained!");
+        assertEquals(defender.name() + " had its energy drained!", result);
     }
 }
