@@ -88,13 +88,15 @@ public class DamageMove extends Move {
         if (Arrays.asList(targetType[0].weaknesses()).contains(moveType))
             multiplier *= 2.0;
         
-        if (Arrays.asList(targetType[1].weaknesses()).contains(moveType))
+        if (targetType[1] != Type.NONE &&
+                Arrays.asList(targetType[1].weaknesses()).contains(moveType))
             multiplier *= 2.0;
         
         if (Arrays.asList(targetType[0].resistances()).contains(moveType))
             multiplier *= 0.5;
         
-        if (Arrays.asList(targetType[1].resistances()).contains(moveType))
+        if (targetType[1] != Type.NONE &&
+                Arrays.asList(targetType[1].resistances()).contains(moveType))
             multiplier *= 0.5;
         
         return multiplier;
