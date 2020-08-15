@@ -23,10 +23,6 @@ class DamageDebuffTest {
     void attackDebuff() {
         attacker.setMove(new DamageDebuff("Aurora Beam"), 0);
         
-        int damage = attacker.useMove(0, defender);
-        assertEquals(true, damage >= 56 && damage <= 66);
-        assertEquals(defender.maxHealth() - defender.currentHealth(), damage);
-        
         boolean success = ((DamageDebuff)(attacker.moves(0))).
                 useSecondary(attacker, defender);
         
@@ -40,10 +36,6 @@ class DamageDebuffTest {
     void specialDefenseDebuff() {
         attacker.setMove(psychic, 0);
         
-        int damage = attacker.useMove(0, defender);
-        assertEquals(true, damage >= 115 && damage <= 136);
-        assertEquals(defender.maxHealth() - defender.currentHealth(), damage);
-        
         boolean success = ((DamageDebuff)(attacker.moves(0))).
                 useSecondary(attacker, defender);
         
@@ -56,10 +48,6 @@ class DamageDebuffTest {
     @Test
     void speedDebuff() {
         attacker.setMove(new DamageDebuff("Bubble Beam"), 0);
-        
-        int damage = attacker.useMove(0, defender);
-        assertEquals(true, damage >= 56 && damage <= 66);
-        assertEquals(defender.maxHealth() - defender.currentHealth(), damage);
         
         boolean success = ((DamageDebuff)(attacker.moves(0))).
                 useSecondary(attacker, defender);
