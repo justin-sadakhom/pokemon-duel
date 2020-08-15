@@ -8,9 +8,15 @@ public class Trainer {
     private int choice;
     private Pokemon active;
     
+    /* Bide fields */
+    public boolean bideActive;
+    public boolean bideUserIn;
+    
     public Trainer(String name, Pokemon[] team) {
         this.team = team;
         this.name = name;
+        bideActive = false;
+        bideUserIn = false;
     }
     
     public Pokemon[] team() {
@@ -51,6 +57,9 @@ public class Trainer {
             active.clearTempStatus();
             active.resetStatStages();
         }
+        
+        if (bideUserIn)
+            bideUserIn = false;
         
         active = replacement;
     }

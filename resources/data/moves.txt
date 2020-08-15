@@ -71,6 +71,12 @@ Status
 -
 Defense
 2
+Bide
+Normal
+Physical
+10
+-
+-
 Bonemerang
 Ground
 Physical

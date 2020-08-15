@@ -156,6 +156,7 @@ public class GUI implements ActionListener {
             moves[i].setBorder(new RoundedBorder(10));
             moves[i].setFocusPainted(false);
             moves[i].addActionListener(this);
+            moves[i].setVisible(false);
         }
         
         moves[0].setBounds(10, 400, 152, 40);
@@ -209,6 +210,7 @@ public class GUI implements ActionListener {
         window.add(rivalBase);
         window.add(battlefield);
         
+        attackLabel.setVisible(false);
         window.setVisible(true);
     }
     
@@ -305,6 +307,11 @@ public class GUI implements ActionListener {
     public void revealStatusBars() {
         playerInfo.setVisible(true);
         rivalInfo.setVisible(true);
+        
+        for (int i = 0; i < 4; i++)
+            moves[i].setVisible(true);
+        
+        attackLabel.setVisible(true);
     }
     
     public void update(Pokemon front, Pokemon back) {
@@ -359,6 +366,13 @@ public class GUI implements ActionListener {
         String directory = "C:\\Pokemon\\sprites\\back\\" + 
                 active.name().toLowerCase() + ".png";
         rivalPokemon.setIcon(new ImageIcon(directory));
+    }
+    
+    public void hideAllButOneMove(String name) {
+        
+        for (JButton move : moves)
+            if (!move.getText().equals(name))
+                move.setVisible(false);
     }
 }
 
