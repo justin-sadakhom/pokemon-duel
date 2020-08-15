@@ -591,6 +591,10 @@ public class Pokemon {
         return currentHealth;
     }
     
+    public int maxHealth() {
+        return stats.get(Stat.HEALTH);
+    }
+    
     public int deductHealth(int damage) {
         
         int deduction;

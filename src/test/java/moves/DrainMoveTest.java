@@ -23,15 +23,12 @@ class DrainMoveTest {
         attacker.deductHealth(100);
         
         int damage = attacker.useMove(0, defender);
-        assertEquals(damage >= 34 && damage <= 41, true);
-        assertEquals(
-            defender.stat(Pokemon.Stat.HEALTH) - defender.currentHealth(),
-            damage
-        );
+        assertEquals(true, damage >= 34 && damage <= 41);
+        assertEquals(defender.maxHealth() - defender.currentHealth(), damage);
         
         ((DrainMove)(attacker.moves(0))).useSecondary(attacker, damage);
         assertEquals(
-            attacker.stat(Pokemon.Stat.HEALTH) - 100 + (damage / 2),
+            attacker.maxHealth() - 100 + (damage / 2),
             attacker.currentHealth()
         );
     }
@@ -42,14 +39,11 @@ class DrainMoveTest {
         defender.deductHealth(371); // Left at 1 health.
         
         int damage = attacker.useMove(0, defender);
-        assertEquals(damage, 1);
+        assertEquals(1, damage);
         assertEquals(defender.isFainted(), true);
         
         ((DrainMove)(attacker.moves(0))).useSecondary(attacker, damage);
-        assertEquals(
-            attacker.stat(Pokemon.Stat.HEALTH),
-            attacker.currentHealth()
-        );
+        assertEquals(attacker.maxHealth(), attacker.currentHealth());
     }
     
     @Test void battleText() {
