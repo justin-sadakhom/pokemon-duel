@@ -1,4 +1,7 @@
-package elitefour.pokemonduel;
+package elitefour.pokemonduel.moves;
+
+import elitefour.pokemonduel.Pokemon;
+import elitefour.pokemonduel.moves.Move;
 
 public class StatusMove extends Move {
     

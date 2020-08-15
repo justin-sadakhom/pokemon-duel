@@ -1,5 +1,8 @@
-package elitefour.pokemonduel;
+package elitefour.pokemonduel.moves;
 
+import elitefour.pokemonduel.Pokemon;
+import elitefour.pokemonduel.Status;
+import elitefour.pokemonduel.Type;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -15,7 +18,11 @@ public class DamageMove extends Move {
     @Override
     public int use(Pokemon user, Pokemon target) {
         deductPP(1);
-        return target.deductHealth(damage(user, target));
+        
+        if (isHit(user, target))
+            return target.deductHealth(damage(user, target));
+        else
+            return 0;
     }
     
     protected int damage(Pokemon user, Pokemon target) {

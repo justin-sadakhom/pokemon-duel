@@ -1,6 +1,6 @@
 package moves;
 
-import elitefour.pokemonduel.Buff;
+import elitefour.pokemonduel.moves.Buff;
 import elitefour.pokemonduel.Pokemon;
 import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.assertEquals;

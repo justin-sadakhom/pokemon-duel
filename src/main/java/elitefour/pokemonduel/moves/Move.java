@@ -1,5 +1,7 @@
-package elitefour.pokemonduel;
+package elitefour.pokemonduel.moves;
 
+import elitefour.pokemonduel.Pokemon;
+import elitefour.pokemonduel.Type;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;

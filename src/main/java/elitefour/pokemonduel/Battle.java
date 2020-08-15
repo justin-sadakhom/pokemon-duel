@@ -1,5 +1,11 @@
 package elitefour.pokemonduel;
 
+import elitefour.pokemonduel.moves.DamageDebuff;
+import elitefour.pokemonduel.moves.Buff;
+import elitefour.pokemonduel.moves.MultiHitMove;
+import elitefour.pokemonduel.moves.DamageMove;
+import elitefour.pokemonduel.moves.Move;
+import elitefour.pokemonduel.moves.DrainMove;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -370,22 +376,27 @@ public class Battle {
             if (move instanceof MultiHitMove)
                 hits = ((MultiHitMove)move).hits();
             
-            // Move misses.
-            if (!move.isHit(user, target))
-                gui.displayText(Move.missText(user.name()));
-            
-            // Move lands.
-            else {
+            for (int i = 0; i < hits; i++) {
+                int damage = user.useMove(slot, target);
+                int misses = 0;
                 
-                for (int i = 0; i < hits; i++) {
-                    int damage = user.useMove(slot, target);
-
-                    double multiplier = 
-                        DamageMove.typeAdvantage(move.type(), target.type());
+                // Move misses.
+                if (damage == 0) {
+                    gui.displayText(Move.missText(user.name()));
+                    misses += 1;
+                }
+                
+                // Move lands.
+                else {
+                    
+                    double multiplier = DamageMove.typeAdvantage(
+                        move.type(), target.type()
+                    );
                     
                     if (multiplier != 1.0)
-                        gui.displayText(DamageMove.hitText(move.type(),
-                                target.type()));
+                        gui.displayText(
+                            DamageMove.hitText(move.type(), target.type())
+                        );
 
                     if (((DamageMove)move).isCrit())
                         gui.displayText(DamageMove.critText());
@@ -394,6 +405,7 @@ public class Battle {
 
                         boolean success = ((DamageDebuff)move).
                                 useSecondary(target, user);
+                        
                         gui.displayText(
                             ((DamageDebuff)move).hitText(target.name(), success)
                         );
@@ -405,7 +417,7 @@ public class Battle {
                     }
                     
                     else if (move instanceof MultiHitMove)
-                        gui.displayText(MultiHitMove.hitText(hits));
+                        gui.displayText(MultiHitMove.hitText(hits - misses));
                 }
             }
         }

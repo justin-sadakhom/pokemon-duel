@@ -1,3 +1,12 @@
+Psychic
+Psychic
+Special
+10
+90
+100
+Special Defense
+10
+1
 Absorb
 Grass
 Special
@@ -46,6 +55,14 @@ Special
 Attack
 10
 1
+Barrage
+Normal
+Physical
+20
+15
+85
+2
+5
 Barrier
 Psychic
 Status
@@ -53,6 +70,14 @@ Status
 -
 -
 Defense
+2
+Bonemerang
+Ground
+Physical
+10
+50
+90
+2
 2
 Bubble
 Water
@@ -72,6 +97,14 @@ Special
 Speed
 10
 1
+Comet Punch
+Normal
+Physical
+15
+18
+85
+2
+5
 Constrict
 Normal
 Physical
@@ -89,6 +122,22 @@ Status
 -
 Defense
 1
+Double Kick
+Fighting
+Physical
+30
+30
+100
+2
+2
+Double Slap
+Normal
+Physical
+10
+15
+85
+2
+5
 Double Team
 Normal
 Status
@@ -105,6 +154,22 @@ Special
 100
 Burn
 10
+Fury Attack
+Normal
+Physical
+20
+15
+85
+2
+5
+Fury Swipes
+Normal
+Physical
+15
+18
+80
+2
+5
 Growth
 Normal
 Status
@@ -149,15 +214,14 @@ Status
 -
 Evasion
 2
-Psychic
-Psychic
-Special
-10
-90
-100
-Special Defense
-10
-1
+Pin Missile
+Bug
+Physical
+20
+25
+95
+2
+5
 Sharpen
 Normal
 Status
@@ -166,6 +230,14 @@ Status
 -
 Attack
 1
+Spike Cannon
+Normal
+Physical
+15
+20
+100
+2
+5
 Swords Dance
 Normal
 Status
@@ -180,6 +252,14 @@ Physical
 35
 40
 100
+Twineedle
+Bug
+Physical
+20
+25
+100
+2
+2
 Vine Whip
 Grass
 Physical

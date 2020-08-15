@@ -1,7 +1,7 @@
 package moves;
 
-import elitefour.pokemonduel.DamageDebuff;
-import elitefour.pokemonduel.Move;
+import elitefour.pokemonduel.moves.DamageDebuff;
+import elitefour.pokemonduel.moves.Move;
 import elitefour.pokemonduel.Pokemon;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;

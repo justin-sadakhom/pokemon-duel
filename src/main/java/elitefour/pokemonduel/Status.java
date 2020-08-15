@@ -34,31 +34,31 @@ public class Status {
         mixStatus = new ArrayList<>();
     }
     
-    LoneStatus loneStatus() {
+    public LoneStatus loneStatus() {
         return loneStatus;
     }
     
-    void setLoneStatus(LoneStatus status) {
+    public void setLoneStatus(LoneStatus status) {
         loneStatus = status;
     }
     
-    void clearLoneStatus() {
+    public void clearLoneStatus() {
         loneStatus = LoneStatus.NONE;
     }
     
-    ArrayList<MixStatus> mixStatus() {
+    public ArrayList<MixStatus> mixStatus() {
         return mixStatus;
     }
     
-    void addMixStatus(MixStatus status) {
+    public void addMixStatus(MixStatus status) {
         mixStatus.add(status);
     }
     
-    void remove(MixStatus status) {
+    public void remove(MixStatus status) {
         mixStatus.remove(status);
     }
     
-    void clearMixStatus() {
+    public void clearMixStatus() {
         mixStatus.clear();
     }
     
