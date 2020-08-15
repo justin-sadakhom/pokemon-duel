@@ -15,7 +15,7 @@ public class Buff extends StatusMove {
         
         super(name);
         
-        String tempStats = "";
+        String[] tempStats = new String[2];
         int tempStage = -1;
         
         try {
@@ -37,7 +37,10 @@ public class Buff extends StatusMove {
                     
                     switch (i) {
                         case 0:
-                            tempStats = line;
+                            if (line.contains("/"))
+                                tempStats = line.split("/");
+                            else
+                                tempStats[0] = line;
                             break;
                         case 1:
                             tempStage = Integer.parseInt(line);
@@ -49,10 +52,13 @@ public class Buff extends StatusMove {
             error.printStackTrace(System.out);
         }
         
-        String[] statsArray = tempStats.split("/");
+        String cleaned = tempStats[0].replace(" ", "_").toUpperCase();
+        this.affectedStats.add(Pokemon.Stat.valueOf(cleaned));
         
-        for (String stat : statsArray)
-            this.affectedStats.add(Pokemon.Stat.valueOf(stat.toUpperCase()));
+        if (tempStats[1] != null) {
+            cleaned = tempStats[1].replace(" ", "_").toUpperCase();
+            this.affectedStats.add(Pokemon.Stat.valueOf(cleaned));
+        }
                  
         this.stages = tempStage;
     }

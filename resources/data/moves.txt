@@ -13,6 +13,30 @@ Special
 Special Defense
 10
 1
+Acid Armor
+Poison
+Status
+20
+-
+-
+Defense
+2
+Agility
+Psychic
+Status
+30
+-
+-
+Speed
+2
+Amnesia
+Psychic
+Status
+20
+-
+-
+Special Defense
+2
 Aurora Beam
 Ice
 Special
@@ -22,6 +46,14 @@ Special
 Attack
 10
 1
+Barrier
+Psychic
+Status
+20
+-
+-
+Defense
+2
 Bubble
 Water
 Special
@@ -49,6 +81,22 @@ Physical
 Speed
 10
 1
+Defense Curl
+Normal
+Status
+40
+-
+-
+Defense
+1
+Double Team
+Normal
+Status
+15
+-
+-
+Evasion
+1
 Flamethrower
 Fire
 Special
@@ -59,11 +107,19 @@ Burn
 10
 Growth
 Normal
-Special
+Status
 20
 -
 -
-Attack/Special_Attack
+Attack/Special Attack
+1
+Harden
+Normal
+Status
+30
+-
+-
+Defense
 1
 Leech Life
 Bug
@@ -71,12 +127,28 @@ Physical
 10
 80
 100
+Meditate
+Psychic
+Status
+40
+-
+-
+Attack
+1
 Mega Drain
 Grass
 Special
 15
 40
 100
+Minimize
+Normal
+Status
+10
+-
+-
+Evasion
+2
 Psychic
 Psychic
 Special
@@ -86,6 +158,22 @@ Special
 Special Defense
 10
 1
+Sharpen
+Normal
+Status
+30
+-
+-
+Attack
+1
+Swords Dance
+Normal
+Status
+20
+-
+-
+Attack
+2
 Tackle
 Normal
 Physical
@@ -98,3 +186,11 @@ Physical
 25
 35
 100
+Withdraw
+Water
+Status
+40
+-
+-
+Defense
+1
