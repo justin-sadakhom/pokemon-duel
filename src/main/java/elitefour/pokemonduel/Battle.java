@@ -463,14 +463,14 @@ public class Battle {
         // DEMO
         Pokemon[] teamOne = new Pokemon[1];
         teamOne[0] = new Pokemon("Venusaur");
-        teamOne[0].setMove(new DrainMove("Mega Drain"), 1);
-        teamOne[0].setMove(new Buff("Growth"), 2);
-        teamOne[0].setMove(new DamageMove("Vine Whip"), 3);
-        teamOne[0].setMove(new DamageMove("Tackle"), 4);
+        teamOne[0].setMove(new DrainMove("Mega Drain"), 0);
+        teamOne[0].setMove(new Buff("Growth"), 1);
+        teamOne[0].setMove(new DamageMove("Vine Whip"), 2);
+        teamOne[0].setMove(new DamageMove("Tackle"), 3);
         
         Pokemon[] teamTwo = new Pokemon[1];
         teamTwo[0] = new Pokemon("Charizard");
-        teamTwo[0].setMove(new DamageMove("Flamethrower"), 1);
+        teamTwo[0].setMove(new DamageMove("Flamethrower"), 0);
         
         Battle game = new Battle(teamOne, teamTwo);
         game.loopBattle();

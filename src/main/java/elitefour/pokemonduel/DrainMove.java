@@ -6,13 +6,11 @@ public class DrainMove extends DamageMove {
         super(name);
     }
     
-    @Override
-    public int use(Pokemon user, Pokemon target) {
-        return super.use(user, target);
-    }
-    
     public void useSecondary(Pokemon user, int damage) {
-        user.restoreHealth(damage / 2);
+        if (damage / 2 < 1)
+            user.restoreHealth(1);
+        else
+            user.restoreHealth(damage / 2);
     }
     
     public static String hitText(String name) {
