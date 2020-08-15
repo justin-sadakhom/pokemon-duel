@@ -52,4 +52,9 @@ class DrainMoveTest {
             attacker.stat(Pokemon.Stat.HEALTH)
         );
     }
+    
+    @Test void battleText() {
+        String result = DrainMove.hitText(defender.name());
+        assertEquals(result, defender.name() + " had its energy drained!");
+    }
 }
