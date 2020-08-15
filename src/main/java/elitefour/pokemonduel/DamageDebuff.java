@@ -38,7 +38,9 @@ public class DamageDebuff extends DamageMove {
                     
                     switch (i) {
                         case 0:
-                            tempStat = Pokemon.Stat.valueOf(line.toUpperCase());
+                            tempStat = Pokemon.Stat.valueOf(
+                                line.toUpperCase().replace(" ", "_")
+                            );
                             break;
                         case 1:
                             tempChance = Integer.parseInt(line);
@@ -55,11 +57,6 @@ public class DamageDebuff extends DamageMove {
         this.affectedStat = tempStat;
         this.effectChance = tempChance;
         this.stages = tempStage;
-    }
-    
-    @Override
-    public int use(Pokemon user, Pokemon target) {
-        return super.use(user, target);
     }
     
     public boolean useSecondary(Pokemon user, Pokemon target) {
@@ -87,7 +84,8 @@ public class DamageDebuff extends DamageMove {
     
     public String hitText(String name, boolean success) {
         
-        String message = name + "'s " + affectedStat().toLowerCase();
+        String message = name + "'s " + 
+                affectedStat().replace("_", " ").toLowerCase();
         
         // Affected stat stage is already at min.
         if (!success)
@@ -97,9 +95,9 @@ public class DamageDebuff extends DamageMove {
         else {
 
             switch (stages()) {
-                case -1:
+                case 1:
                     return message + " fell!";
-                default: // case -2
+                default: // case 2
                     return message + " fell sharply!";
             }
         }

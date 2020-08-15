@@ -1,29 +1,54 @@
-Mega Drain
+Absorb
 Grass
 Special
-15
+25
+20
+100
+Acid
+Poison
+Special
+30
 40
 100
-Growth
-Normal
+Special Defense
+10
+1
+Aurora Beam
+Ice
 Special
 20
--
--
-Attack/Special_Attack
-1
-Vine Whip
-Grass
-Physical
-25
-35
+65
 100
-Tackle
+Attack
+10
+1
+Bubble
+Water
+Special
+30
+40
+100
+Speed
+10
+1
+Bubble Beam
+Water
+Special
+20
+65
+100
+Speed
+10
+1
+Constrict
 Normal
 Physical
 35
-40
+10
 100
+Speed
+10
+1
 Flamethrower
 Fire
 Special
@@ -32,3 +57,44 @@ Special
 100
 Burn
 10
+Growth
+Normal
+Special
+20
+-
+-
+Attack/Special_Attack
+1
+Leech Life
+Bug
+Physical
+10
+80
+100
+Mega Drain
+Grass
+Special
+15
+40
+100
+Psychic
+Psychic
+Special
+10
+90
+100
+Special Defense
+10
+1
+Tackle
+Normal
+Physical
+35
+40
+100
+Vine Whip
+Grass
+Physical
+25
+35
+100
