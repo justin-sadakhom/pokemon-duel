@@ -216,7 +216,7 @@ public class Pokemon {
 
             tempType[0] = Type.valueOf(typing[0].toUpperCase());
             
-            if (typing[1].isEmpty())
+            if (typing[1] == null)
                 tempType[1] = Type.NONE;
             else
                 tempType[1] = Type.valueOf(typing[1].toUpperCase());
@@ -284,8 +284,7 @@ public class Pokemon {
     }
     
     public void setMove(Move move, int slot) {
-        int index = slot - 1;
-        moves[index] = move;
+        moves[slot] = move;
     }
     
     public int useMove(int slot, Pokemon target) {
