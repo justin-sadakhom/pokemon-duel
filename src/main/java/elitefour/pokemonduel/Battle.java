@@ -307,8 +307,7 @@ public class Battle {
         );
     }
     
-    private void attemptAttack(Pokemon attacker, int slot, Pokemon defender,
-            Trainer trainer) {
+    private void attemptAttack(Pokemon attacker, int slot, Pokemon defender, Trainer trainer) {
         
         Object[] result = attacker.immobilizedBy();
         Status obstacle = (Status)result[0];
@@ -332,14 +331,14 @@ public class Battle {
             }
             
             // Check non-volatile status.
-            if (!obstacle.mixStatus().isEmpty()) {
+            if (obstacle.hasMixStatus()) {
                 
-                if (obstacle.mixStatus().contains(Status.MixStatus.CONFUSION)) {
+                if (obstacle.has(Status.MixStatus.CONFUSION)) {
                     gui.displayText(attacker.name() + " is confused!");
                     gui.displayText(attacker.name() + " snapped out of confusion!");
                 }
                 
-                if (obstacle.mixStatus().contains(Status.MixStatus.INFATUATION))
+                if (obstacle.has(Status.MixStatus.INFATUATION))
                     gui.displayText(attacker.name() + " is in love",
                             "with the foe's " + defender.name() + "!");
             }
@@ -351,7 +350,7 @@ public class Battle {
         else {
             
             // Check volatile status.
-            if (obstacle.loneStatus() != Status.LoneStatus.NONE) {
+            if (obstacle.hasLoneStatus()) {
                 
                 switch (obstacle.loneStatus()) {
                     
@@ -359,8 +358,7 @@ public class Battle {
                         gui.displayText(attacker.name() + " is frozen solid!");
                         
                     case PARALYSIS:
-                        gui.displayText(attacker.name() + " is paralyzed!",
-                                "It can't move!");
+                        gui.displayText(attacker.name() + " is paralyzed!", "It can't move!");
                         
                     case SLEEP:
                         gui.displayText(attacker.name() + " is fast asleep.");
@@ -370,10 +368,10 @@ public class Battle {
             // Check non-volatile status.
             else {
                 
-                if (obstacle.mixStatus().contains(Status.MixStatus.RECHARGE))
+                if (obstacle.has(Status.MixStatus.RECHARGE))
                     gui.displayText(attacker.name() + " must recharge!");
                 
-                if (obstacle.mixStatus().contains(Status.MixStatus.CONFUSION)) {
+                if (obstacle.has(Status.MixStatus.CONFUSION)) {
                     
                     gui.displayText(attacker.name() + " is confused!");
                     gui.displayText("It hurt itself in confusion!");
@@ -382,7 +380,7 @@ public class Battle {
                     defender.deductHealth(DamageMove.confusionDamage(defender));
                 }
                 
-                if (obstacle.mixStatus().contains(Status.MixStatus.INFATUATION)) {
+                if (obstacle.has(Status.MixStatus.INFATUATION)) {
                     gui.displayText(attacker.name() + " is in love", 
                             "with the foe's " + defender.name() + "!");
                     gui.displayText(attacker.name() + " is immobilized by love!");
@@ -392,8 +390,7 @@ public class Battle {
         }
     }
     
-    private void processAttack(Pokemon user, int slot, Pokemon target,
-            Trainer trainer) {
+    private void processAttack(Pokemon user, int slot, Pokemon target, Trainer trainer) {
         
         Move move = user.moves(slot);
         

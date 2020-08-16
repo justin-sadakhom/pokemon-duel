@@ -27,7 +27,14 @@ public class DamageReflect extends DamageMove {
         
         // Generate number of turns that the user is idle.
         if (idleTurns == 0) {
-            idleTurns = 2;
+            
+            switch (name()) {
+                case "Bide":
+                    idleTurns = 2;
+                case "Counter":
+                    idleTurns = 1;
+            }
+            
             turnsLeft = idleTurns;
         }
 
@@ -40,8 +47,7 @@ public class DamageReflect extends DamageMove {
     @Override
     protected int damage(Pokemon user, Pokemon target) {
         int damage = user.damageTaken(0) + user.damageTaken(1);
-        return (int)(REFLECT_MULTIPLIER * damage * 
-                typeAdvantage(type(), target.type()));
+        return (int)(REFLECT_MULTIPLIER * damage * typeAdvantage(type(), target.type()));
     }
     
     public static double typeAdvantage(Type moveType, Type[] targetType) {

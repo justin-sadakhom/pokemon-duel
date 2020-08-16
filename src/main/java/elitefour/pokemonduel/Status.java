@@ -46,6 +46,10 @@ public class Status {
         loneStatus = LoneStatus.NONE;
     }
     
+    public boolean hasLoneStatus() {
+        return loneStatus != LoneStatus.NONE;
+    }
+    
     public ArrayList<MixStatus> mixStatus() {
         return mixStatus;
     }
@@ -60,6 +64,14 @@ public class Status {
     
     public void clearMixStatus() {
         mixStatus.clear();
+    }
+    
+    public boolean hasMixStatus() {
+        return !mixStatus().isEmpty();
+    }
+    
+    public boolean has(MixStatus condition) {
+        return mixStatus.contains(condition);
     }
     
     public boolean isEmpty() {
