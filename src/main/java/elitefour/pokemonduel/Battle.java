@@ -4,6 +4,7 @@ import elitefour.pokemonduel.moves.DamageDebuff;
 import elitefour.pokemonduel.moves.Buff;
 import elitefour.pokemonduel.moves.MultiHitMove;
 import elitefour.pokemonduel.moves.DamageMove;
+import elitefour.pokemonduel.moves.DamageReflect;
 import elitefour.pokemonduel.moves.Move;
 import elitefour.pokemonduel.moves.DrainMove;
 import java.util.ArrayList;
@@ -65,7 +66,12 @@ public class Battle {
     private void getPlayerAction() {
         
         Action action;
-
+        
+        if (player.bideUserIn && player.bideActive)
+            gui.hideAllButOneMove("Bide");
+        else
+            gui.revealStatusBars();
+            
         gui.displayText("What will you do?");
         gui.waitForClick();
         
@@ -115,17 +121,27 @@ public class Battle {
     
     private void getRivalAction() {
         
-        Random rng = new Random();
-        int numMoves = 0;
+        int rivalChoice = -1;
         
-        for (int i = 0; i < rival.active().moves().length; i++)
-            if (rival.active().moves(i) != null)
-                numMoves += 1;
+        if (rival.bideActive && rival.bideUserIn) {
+            for (int i = 0; i < rival.active().moves().length; i++)
+                if (rival.active().moves(i).name().equals("Bide"))
+                    rivalChoice = i;
+        }
         
-        int rivalChoice = rng.nextInt(numMoves);
+        else {
+            Random rng = new Random();
+            int numMoves = 0;
 
-        while (rival.active().moves()[rivalChoice].PP() == 0)
+            for (int j = 0; j < rival.active().moves().length; j++)
+                if (rival.active().moves(j) != null)
+                    numMoves += 1;
+
             rivalChoice = rng.nextInt(numMoves);
+
+            while (rival.active().moves(rivalChoice).PP() == 0)
+                rivalChoice = rng.nextInt(numMoves);
+        }
         
         rival.setAction(Action.ATTACK);
         rival.setChoice(rivalChoice);
@@ -142,7 +158,16 @@ public class Battle {
     private void playTurn() {
         
         Trainer first, second;
-        Pokemon faster = Pokemon.compareSpeed(player.active(), rival.active());
+        Pokemon faster;
+        
+        if (player.action() == Action.ATTACK && rival.action() == Action.ATTACK)
+            faster = Pokemon.compareSpeed(
+                player.active(), rival.active(),
+                player.active().moves(player.choice()),
+                rival.active().moves(rival.choice())
+            );
+        else
+            faster = Pokemon.compareSpeed(player.active(), rival.active());
         
         if (player.active() == faster) {
             first = player;
@@ -167,7 +192,8 @@ public class Battle {
         
         // Faster player attacks.
         if (first.action() == Action.ATTACK) {
-            attemptAttack(first.active(), first.choice(), second.active());
+            attemptAttack(first.active(), first.choice(), second.active(),
+                     first);
             gui.update(player.active(), rival.active());
 
             if (second.active().isFainted()) {
@@ -215,7 +241,8 @@ public class Battle {
         
         // Slower player attacks.
         if (second.action() == Action.ATTACK && !second.active().isFainted()) {
-            attemptAttack(second.active(), second.choice(), first.active());
+            attemptAttack(second.active(), second.choice(), first.active(),
+                    second);
             gui.update(player.active(), rival.active());
 
             if (faster.isFainted()) {
@@ -280,7 +307,8 @@ public class Battle {
         );
     }
     
-    private void attemptAttack(Pokemon attacker, int slot, Pokemon defender) {
+    private void attemptAttack(Pokemon attacker, int slot, Pokemon defender,
+            Trainer trainer) {
         
         Object[] result = attacker.immobilizedBy();
         Status obstacle = (Status)result[0];
@@ -288,7 +316,7 @@ public class Battle {
         
         // Attacker had no status effects.
         if (obstacle.isEmpty())
-            processAttack(attacker, slot, defender);
+            processAttack(attacker, slot, defender, trainer);
         
         // Display battle text for attacker breaking through immobilization.
         else if (!blocked) {
@@ -316,7 +344,7 @@ public class Battle {
                             "with the foe's " + defender.name() + "!");
             }
             
-            processAttack(attacker, slot, defender);
+            processAttack(attacker, slot, defender, trainer);
         }
         
         // Display battle text for attacker being immobilized.
@@ -355,8 +383,8 @@ public class Battle {
                 }
                 
                 if (obstacle.mixStatus().contains(Status.MixStatus.INFATUATION)) {
-                    gui.displayText(attacker.name() + " is in love"
-                            , "with the foe's " + defender.name() + "!");
+                    gui.displayText(attacker.name() + " is in love", 
+                            "with the foe's " + defender.name() + "!");
                     gui.displayText(attacker.name() + " is immobilized by love!");
                     gui.update(player.active(), rival.active());
                 }
@@ -364,10 +392,17 @@ public class Battle {
         }
     }
     
-    private void processAttack(Pokemon user, int slot, Pokemon target) {
+    private void processAttack(Pokemon user, int slot, Pokemon target,
+            Trainer trainer) {
         
         Move move = user.moves(slot);
-        gui.displayText(Move.attemptText(user.name(), move.name()));
+        
+        if (move instanceof DamageReflect && ((DamageReflect)move).isCharging())
+            gui.displayText(DamageReflect.chargeText(user.name()));
+        
+        else if ((move instanceof DamageReflect && ((DamageReflect)move).firstUse()) ||
+                move instanceof DamageReflect == false)
+            gui.displayText(Move.attemptText(user.name(), move.name()));
         
         // Damaging move.
         if (move instanceof DamageMove) {
@@ -375,6 +410,11 @@ public class Battle {
             
             if (move instanceof MultiHitMove)
                 hits = ((MultiHitMove)move).hits();
+            
+            if (move.name().equals("Bide")) {
+                trainer.bideActive = true;
+                trainer.bideUserIn = true;
+            }
             
             for (int i = 0; i < hits; i++) {
                 int damage = user.useMove(slot, target);
@@ -387,16 +427,23 @@ public class Battle {
                 }
                 
                 // Move lands.
-                else {
+                else if (damage != -1) {
                     
-                    double multiplier = DamageMove.typeAdvantage(
-                        move.type(), target.type()
-                    );
+                    double multiplier = DamageMove.
+                            typeAdvantage(move.type(), target.type());
                     
-                    if (multiplier != 1.0)
-                        gui.displayText(
-                            DamageMove.hitText(move.type(), target.type())
-                        );
+                    if (multiplier != 1.0) {
+                        String text;
+                        
+                        if (move instanceof DamageReflect)
+                            text = DamageReflect.
+                                    hitText(move.type(), target.type());
+                        else
+                            text = DamageMove.
+                                    hitText(move.type(), target.type());
+                        
+                        gui.displayText(text);
+                    }
 
                     if (((DamageMove)move).isCrit())
                         gui.displayText(DamageMove.critText());
@@ -418,6 +465,11 @@ public class Battle {
                     
                     else if (move instanceof MultiHitMove)
                         gui.displayText(MultiHitMove.hitText(hits - misses));
+                    
+                    else if (move instanceof DamageReflect) {
+                        gui.displayText(DamageReflect.hitText(user.name()));
+                        trainer.bideActive = false;
+                    }
                 }
             }
         }
@@ -478,11 +530,11 @@ public class Battle {
         teamOne[0].setMove(new DrainMove("Mega Drain"), 0);
         teamOne[0].setMove(new Buff("Growth"), 1);
         teamOne[0].setMove(new DamageMove("Vine Whip"), 2);
-        teamOne[0].setMove(new DamageMove("Tackle"), 3);
+        teamOne[0].setMove(new DamageReflect("Bide"), 3);
         
         Pokemon[] teamTwo = new Pokemon[1];
         teamTwo[0] = new Pokemon("Charizard");
-        teamTwo[0].setMove(new DamageMove("Flamethrower"), 0);
+        teamTwo[0].setMove(new DamageMove("Tackle"), 0);
         
         Battle game = new Battle(teamOne, teamTwo);
         game.loopBattle();

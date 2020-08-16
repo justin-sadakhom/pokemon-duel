@@ -19,21 +19,19 @@ public class DamageReflect extends DamageMove {
     @Override
     public int use(Pokemon user, Pokemon target) {
         
+        // When user is no longer idle, reflect damage.
+        if (turnsLeft == 0) {
+            idleTurns = 0;
+            return target.deductHealth(damage(user, target));
+        }
+        
         // Generate number of turns that the user is idle.
         if (idleTurns == 0) {
             idleTurns = 2;
             turnsLeft = idleTurns;
         }
-        
-        // Keep track of how long until user can move again.
-        else if (turnsLeft > 0)
-            turnsLeft -= 1;
-        
-        // When user is no longer idle...
-        if (turnsLeft == 0) {
-            idleTurns = 0;
-            return target.deductHealth(damage(user, target));
-        }
+
+        turnsLeft -= 1;
         
         // Still idle turns left.
         return -1; 
@@ -52,6 +50,14 @@ public class DamageReflect extends DamageMove {
             return 0;
         else
             return 1;
+    }
+    
+    public boolean isCharging() {
+        return turnsLeft == 1;
+    }
+    
+    public boolean firstUse() {
+        return turnsLeft == -1;
     }
     
     public static String chargeText(String user) {

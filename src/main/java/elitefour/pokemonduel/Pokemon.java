@@ -98,6 +98,7 @@ public class Pokemon {
     private final Move[] moves;
     private final Nature nature;
     private final Status status;
+    private final Integer[] damageTaken; // Used for damage reflect moves.
     private int level, sleepCounter, confusionCounter;
     
     /* Statistics fields */
@@ -116,6 +117,7 @@ public class Pokemon {
         this.moves = new Move[4];
         this.nature = Nature.HARDY;
         this.status = new Status();
+        this.damageTaken = new Integer[2];
         this.level = 100;
         
         this.baseStats = initBaseStats();
@@ -159,6 +161,7 @@ public class Pokemon {
         this.moves = moves;
         this.nature = nature;
         this.status = new Status();
+        this.damageTaken = new Integer[2];
         this.level = level;
         
         this.baseStats = initBaseStats();
@@ -418,6 +421,24 @@ public class Pokemon {
         return new Object[]{obstacle, false};
     }
     
+    public Integer damageTaken(int slot) {
+        return damageTaken[slot];
+    }
+    
+    public void addDamage(int damage) {
+        
+        if (damageTaken[0] == null)
+            damageTaken[0] = damage;
+        
+        else if (damageTaken[1] == null)
+            damageTaken[1] = damage;
+
+        else {
+            damageTaken[0] = damageTaken[1];
+            damageTaken[1] = damage;
+        }
+    }
+    
     public int level() {
         return level;
     }
@@ -580,11 +601,57 @@ public class Pokemon {
         else {
             Random coinFlip = new Random();
             boolean heads = coinFlip.nextBoolean();
-            
+
             if (heads)
                 return first;
             else
                 return second;
+        }
+    }
+    
+    public static Pokemon compareSpeed(Pokemon first, Pokemon second, Move 
+            firstMove, Move secondMove) {
+        
+        String result = Move.comparePriority(firstMove, secondMove);
+        
+        if (first.stat(Stat.SPEED) > second.stat(Stat.SPEED)) {
+            
+            switch (result) {
+                case "one":
+                default:
+                    return first;
+                case "two":
+                    return second;
+            }
+        }
+        
+        else if (first.stat(Stat.SPEED) < second.stat(Stat.SPEED)) {
+            
+            switch (result) {
+                case "one":
+                    return first;
+                case "two":
+                default:
+                    return second;
+            }
+        }
+        
+        else {
+            
+            switch (result) {
+                case "one":
+                    return first;
+                case "two":
+                    return second;
+                default:
+                    Random coinFlip = new Random();
+                    boolean heads = coinFlip.nextBoolean();
+
+                    if (heads)
+                        return first;
+                    else
+                        return second;
+            }
         }
     }
     
@@ -613,6 +680,7 @@ public class Pokemon {
             currentHealth -= damage;
         }
         
+        addDamage(deduction);
         return deduction;
     }
     

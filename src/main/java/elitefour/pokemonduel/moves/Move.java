@@ -145,5 +145,29 @@ public abstract class Move {
         return user + "'s attack missed!";
     }
     
+    public static String comparePriority(Move one, Move two) {
+        
+        if ((one.name.equals("Bide") || one.name.equals("Quick Attack")) &&
+                (two.name.equals("Bide") || two.name.equals("Quick Attack"))) {
+            
+            Random coinFlip = new Random();
+            boolean heads = coinFlip.nextBoolean();
+            
+            if (heads)
+                return "one";
+            else
+                return "two";
+        }
+        
+        else if (one.name.equals("Bide") || one.name.equals("Quick Attack"))
+            return "one";
+        
+        else if (two.name.equals("Bide") || two.name.equals("Quick Attack"))
+            return "two";
+        
+        else
+            return "none";
+    }
+    
     public abstract int use(Pokemon user, Pokemon target);
 }
