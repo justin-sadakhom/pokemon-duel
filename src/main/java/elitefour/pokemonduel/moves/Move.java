@@ -14,7 +14,7 @@ public abstract class Move {
     
     private final static String[] PLUS_PRIORITY_MOVES = new String[]{"Bide", "Quick Attack"};
     private final static String[] MINUS_PRIORITY_MOVES = new String[]{"Counter"};
-    
+
     protected final static String MOVE_DIRECTORY = "resources\\data\\moves.txt";
     
     public enum Category {
@@ -28,7 +28,7 @@ public abstract class Move {
     private final Category category;
     private final Fraction PP;
     private final int power;
-    private final int accuracy;
+    private int accuracy;
     
     public Move(String name) {
         
@@ -136,6 +136,11 @@ public abstract class Move {
     
     public int accuracy() {
         return accuracy;
+    }
+    
+    /* DEBUG PURPOSES ONLY */
+    public void setAccuracy(int accuracy) {
+        this.accuracy = accuracy;
     }
     
     public boolean isHit(Pokemon user, Pokemon target) {

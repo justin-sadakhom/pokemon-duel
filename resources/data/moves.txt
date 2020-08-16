@@ -228,6 +228,12 @@ Physical
 95
 2
 5
+Quick Attack
+Normal
+Physical
+30
+40
+100
 Sharpen
 Normal
 Status
