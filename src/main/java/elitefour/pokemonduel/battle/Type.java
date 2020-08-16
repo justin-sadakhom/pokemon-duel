@@ -1,4 +1,4 @@
-package elitefour.pokemonduel;
+package elitefour.pokemonduel.battle;
 
 import java.util.Map;
 import static java.util.Map.entry;

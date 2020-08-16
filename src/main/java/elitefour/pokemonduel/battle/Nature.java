@@ -1,4 +1,4 @@
-package elitefour.pokemonduel;
+package elitefour.pokemonduel.battle;
 
 public enum Nature {
     HARDY,

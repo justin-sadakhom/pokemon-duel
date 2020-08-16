@@ -1,4 +1,4 @@
-package elitefour.pokemonduel;
+package elitefour.pokemonduel.battle;
 
 import elitefour.pokemonduel.moves.DamageDebuff;
 import elitefour.pokemonduel.moves.Buff;
@@ -399,7 +399,7 @@ public class Battle {
         
         else if ((move instanceof DamageReflect && ((DamageReflect)move).firstUse()) ||
                 move instanceof DamageReflect == false)
-            gui.displayText(Move.attemptText(user.name(), move.name()));
+            gui.displayText(move.attemptText(user.name()));
         
         // Damaging move.
         if (move instanceof DamageMove) {
@@ -419,7 +419,7 @@ public class Battle {
                 
                 // Move misses.
                 if (damage == 0) {
-                    gui.displayText(Move.missText(user.name()));
+                    gui.displayText(move.missText(user.name()));
                     misses += 1;
                 }
                 
@@ -477,7 +477,7 @@ public class Battle {
 
             // Move misses.
             if (!move.isHit(user, target))
-                gui.displayText(Move.missText(user.name()));
+                gui.displayText(move.missText(user.name()));
             
             // Move hits.
             else {
@@ -517,6 +517,11 @@ public class Battle {
                 }
             }
         }
+    }
+    
+    public static boolean checkOdds(double odds) {
+        Random rng = new Random();
+        return rng.nextInt(100) < odds;
     }
     
     private static void startBattle() {

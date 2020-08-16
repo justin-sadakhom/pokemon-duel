@@ -1,14 +1,21 @@
 package elitefour.pokemonduel.moves;
 
-import elitefour.pokemonduel.Pokemon;
-import elitefour.pokemonduel.Type;
+import elitefour.pokemonduel.battle.Battle;
+import elitefour.pokemonduel.battle.Pokemon;
+import elitefour.pokemonduel.battle.Type;
+import elitefour.pokemonduel.util.Fraction;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Random;
+import java.util.Arrays;
 
 public abstract class Move {
+    
+    private final static String[] PLUS_PRIORITY_MOVES = new String[]{"Bide", "Quick Attack"};
+    private final static String[] MINUS_PRIORITY_MOVES = new String[]{"Counter"};
+    
+    protected final static String MOVE_DIRECTORY = "resources\\data\\moves.txt";
     
     public enum Category {
         PHYSICAL,
@@ -19,21 +26,20 @@ public abstract class Move {
     private final String name;
     private final Type type;
     private final Category category;
-    private final int maxPP;
+    private final Fraction PP;
     private final int power;
     private final int accuracy;
-    private int currentPP;
     
     public Move(String name) {
         
         Type tempType = Type.NONE;
         Category tempCategory = Category.STATUS;
-        int pp = -1;
+        int tempPP = -1;
         int tempPower = -1;
         int tempAccuracy = -1;
         
         try {
-            File file = new File("resources\\data\\moves.txt");
+            File file = new File(MOVE_DIRECTORY);
             BufferedReader reader = new BufferedReader(new FileReader(file));
 
             String line = "";
@@ -47,21 +53,26 @@ public abstract class Move {
                     line = reader.readLine();
                     
                     switch (i) {
+                        
                         case 0:
                             tempType = Type.valueOf(line.toUpperCase());
                             break;
+                            
                         case 1:
                             tempCategory = Category.valueOf(line.toUpperCase());
                             break;
+                            
                         case 2:
-                            pp = Integer.parseInt(line);
+                            tempPP = Integer.parseInt(line);
                             break;
+                            
                         case 3:
                             if (line.equals("-"))
                                 tempPower = 0;
                             else
                                 tempPower = Integer.parseInt(line);
                             break;
+                            
                         case 4:
                             if (line.equals("-"))
                                 tempAccuracy = 0;
@@ -78,7 +89,7 @@ public abstract class Move {
         this.name = name;
         this.type = tempType;
         this.category = tempCategory;
-        this.maxPP = this.currentPP = pp;
+        this.PP = new Fraction(tempPP, tempPP);
         this.power = tempPower;
         this.accuracy = tempAccuracy;
     }
@@ -95,63 +106,71 @@ public abstract class Move {
         return category;
     }
     
-    public int maxPP() {
-        return maxPP;
+    public int PP() {
+        return PP.current();
     }
     
-    public int PP() {
-        return currentPP;
+    public int maxPP() {
+        return PP.maximum();
     }
     
     public void addPP(int addition) {
         
-        if (currentPP + addition <= maxPP)
-            currentPP += addition;
+        if (PP() + addition <= maxPP())
+            PP.setCurrent(PP() + addition);
         else
-            currentPP = maxPP;
+            PP.setCurrent(maxPP());
     }
     
     public void deductPP(int deduction) {
         
-        if (currentPP - deduction >= 0)
-            currentPP -= deduction;
+        if (PP() - deduction >= 0)
+            PP.setCurrent(PP() - deduction);
         else
-            currentPP = 0;
+            PP.setCurrent(0);
     }
     
     public int power() {
         return power;
     }
     
+    public int accuracy() {
+        return accuracy;
+    }
+    
+    public boolean isHit(Pokemon user, Pokemon target) {
+        double hitChance = hitChance(user, target);
+        return Battle.checkOdds(hitChance);
+    }
+    
     private double hitChance(Pokemon user, Pokemon target) {
         
         if (accuracy == 0)
             return 100;
-        else
-            return user.hiddenStat(Pokemon.Stat.ACCURACY) * accuracy * 
-                    target.hiddenStat(Pokemon.Stat.EVASION);
+        
+        else {
+            double userAccuracy = user.hiddenStat(Pokemon.Stat.ACCURACY);
+            double targetEvasion = target.hiddenStat(Pokemon.Stat.EVASION);
+            return userAccuracy * this.accuracy * targetEvasion;
+        }
     }
     
-    public boolean isHit(Pokemon user, Pokemon target) {
-        Random rng = new Random();
-        return rng.nextInt(100) < hitChance(user, target);
+    public abstract int use(Pokemon user, Pokemon target);
+    
+    public String attemptText(String user) {
+        return user + " used " + name + "!";
     }
     
-    public static String attemptText(String user, String moveName) {
-        return user + " used " + moveName + "!";
-    }
-    
-    public static String missText(String user) {
+    public String missText(String user) {
         return user + "'s attack missed!";
     }
     
     public static String comparePriority(Move one, Move two) {
         
-        if ((one.name.equals("Bide") || one.name.equals("Quick Attack")) &&
-                (two.name.equals("Bide") || two.name.equals("Quick Attack"))) {
+        if (Arrays.asList(PLUS_PRIORITY_MOVES).contains(one.name) &&
+                Arrays.asList(PLUS_PRIORITY_MOVES).contains(two.name)) {
             
-            Random coinFlip = new Random();
-            boolean heads = coinFlip.nextBoolean();
+            boolean heads = Battle.checkOdds(50); // 50% chance to return true.
             
             if (heads)
                 return "one";
@@ -159,15 +178,15 @@ public abstract class Move {
                 return "two";
         }
         
-        else if (one.name.equals("Bide") || one.name.equals("Quick Attack"))
+        else if (Arrays.asList(PLUS_PRIORITY_MOVES).contains(one.name) ||
+                Arrays.asList(MINUS_PRIORITY_MOVES).contains(two.name))
             return "one";
         
-        else if (two.name.equals("Bide") || two.name.equals("Quick Attack"))
+        else if (Arrays.asList(PLUS_PRIORITY_MOVES).contains(two.name) ||
+                Arrays.asList(MINUS_PRIORITY_MOVES).contains(one.name))
             return "two";
         
         else
             return "none";
     }
-    
-    public abstract int use(Pokemon user, Pokemon target);
 }

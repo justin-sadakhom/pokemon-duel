@@ -1,4 +1,4 @@
-package elitefour.pokemonduel;
+package elitefour.pokemonduel.battle;
 
 import elitefour.pokemonduel.moves.Move;
 import java.io.BufferedReader;

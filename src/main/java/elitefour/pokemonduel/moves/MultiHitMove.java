@@ -18,7 +18,7 @@ public class MultiHitMove extends DamageMove {
         int tempMaxHits = -1;
         
         try {
-            File file = new File("resources\\data\\moves.txt");
+            File file = new File(Move.MOVE_DIRECTORY);
             BufferedReader reader = new BufferedReader(new FileReader(file));
 
             String line = "";

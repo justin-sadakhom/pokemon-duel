@@ -1,6 +1,6 @@
 package elitefour.pokemonduel.moves;
 
-import elitefour.pokemonduel.Pokemon;
+import elitefour.pokemonduel.battle.Pokemon;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -20,7 +20,7 @@ public class Buff extends StatusMove {
         int tempStage = -1;
         
         try {
-            File file = new File("resources\\data\\moves.txt");
+            File file = new File(Move.MOVE_DIRECTORY);
             BufferedReader reader = new BufferedReader(new FileReader(file));
 
             String line = "";

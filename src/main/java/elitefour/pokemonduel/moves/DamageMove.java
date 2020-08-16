@@ -1,8 +1,8 @@
 package elitefour.pokemonduel.moves;
 
-import elitefour.pokemonduel.Pokemon;
-import elitefour.pokemonduel.Status;
-import elitefour.pokemonduel.Type;
+import elitefour.pokemonduel.battle.Pokemon;
+import elitefour.pokemonduel.battle.Status;
+import elitefour.pokemonduel.battle.Type;
 import java.util.Arrays;
 import java.util.Random;
 

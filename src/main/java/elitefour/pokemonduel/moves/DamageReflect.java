@@ -1,7 +1,7 @@
 package elitefour.pokemonduel.moves;
 
-import elitefour.pokemonduel.Pokemon;
-import elitefour.pokemonduel.Type;
+import elitefour.pokemonduel.battle.Pokemon;
+import elitefour.pokemonduel.battle.Type;
 import java.util.Arrays;
 
 public class DamageReflect extends DamageMove {

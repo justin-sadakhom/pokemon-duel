@@ -1,6 +1,6 @@
 package elitefour.pokemonduel.moves;
 
-import elitefour.pokemonduel.Pokemon;
+import elitefour.pokemonduel.battle.Pokemon;
 
 public class DrainMove extends DamageMove {
     
